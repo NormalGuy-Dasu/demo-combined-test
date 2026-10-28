@@ -1,0 +1,53 @@
+{
+    "document_type": "danh_sach_cong_khai_cap_giay_chung_nhan_quyen_su_dung_dat",
+    "document_name": "Danh sách công khai cấp GCN",
+    "start_triggers": [
+        "DANH SÁCH CÔNG KHAI"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 8,
+    "end_triggers": [
+        "Thủ trưởng cơ quan lập danh sách",
+        "sử dụng đất về việc công khai danh sách"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)Mẫu số\\s*(\\S+)",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Thủ trưởng cơ quan lập danh sách"
+            ],
+            "scan_limit": 10,
+            "scan_direction": "bottom_up",
+            "look_up_lines": 2,
+            "context_direction": "above",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Danh sách công khai các trường hợp đủ điều kiện cấp giấy chứng nhận quyền sử dụng đất"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "hybrid_dictionary_regex",
+            "master_data": "dictionaries/dict_co_quan_cap_xa.txt",
+            "skip_lines": 0,
+            "scan_direction": "top_down",
+            "scan_limit": 5
+        }
+    ]
+}

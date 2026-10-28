@@ -1,0 +1,42 @@
+{
+    "document_type": "phieu_tham_dinh_ho_so",
+    "document_name": "Phiếu thẩm định hồ sơ",
+    
+    "start_triggers": [
+        "THẢM ĐỊNH HỒ SƠ",
+        "THẨM ĐỊNH HỒ SƠ"
+    ],
+    "start_threshold": 85,
+    
+    "end_triggers": [
+        "Lãnh đạo",
+        "Tổ trưởng"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Phiếu thẩm định hồ sơ",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "",
+            "data_type": "string"
+        }
+    ]
+}

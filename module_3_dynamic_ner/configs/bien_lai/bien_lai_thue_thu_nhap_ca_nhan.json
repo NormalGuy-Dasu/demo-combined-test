@@ -1,0 +1,43 @@
+{
+    "document_type": "bien_lai_thue_thu_nhap_ca_nhan",
+    "document_name": "Biên lai thuế thu nhập cá nhân",
+    "start_triggers": [
+        "BIÊN LAI THUẾ THU NHẬP CÁ NHÂN"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 20,
+    
+    "end_triggers": [
+        "THỦ TRƯỞNG CƠ QUAN THUẾ"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)S[ốôo][^0-9]*\\n?[^0-9]*([0-9]{5,9})",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)(?:ng[àa]y|ngay|ngäy|ngqy|ng)[\\s.,:;\\-_]*(?:\\([^)]*\\)|\\[[^\\]]*\\]|(?:d[a-z]*|ate|at))?[\\s.,:;\\-_]*([0-9SsOoQqLlIi|BbZzđvV]+)[\\s.,:;\\-_]*(?:th[áa]ng|thang|thảng|thãng|thg|th|nhàng|nhang)[\\s.,:;\\-_]*(?:\\([^)]*\\)|\\[[^\\]]*\\]|(?:m[a-z]*|nth|onth))?[\\s.,:;\\-_]*([0-9SsOoQqLlIi|BbZzđvV]+)[\\s.,:;\\-_]*(?:n[ăa]m|nam|näm|nãm|n)[\\s.,:;\\-_]*(?:\\([^)]*\\)|\\[[^\\]]*\\]|(?:y[a-z]*|ear|ar))?[\\s.,:;\\-_]*([0-9SsOoQqLlIi|BbZzđvV]+)",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Biên lai thuế thu nhập cá nhân"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "CCT"
+        }
+    ]
+}

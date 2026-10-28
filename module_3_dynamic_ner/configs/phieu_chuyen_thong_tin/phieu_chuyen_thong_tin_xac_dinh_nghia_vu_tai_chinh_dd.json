@@ -1,0 +1,62 @@
+{
+    "document_type": "phieu_chuyen_thong_tin_xac_dinh_nghia_vu_tai_chinh_dd",
+    "start_triggers": [
+      "PHIẾU CHUYỂN THÔNG TIN"
+    ],
+    "radar_lines": 15,
+    "exclude_triggers": [
+        "Nộp thuế"
+    ],
+    "end_triggers": [
+      "NHỮNG GIẤY TỜ KÈM THEO",
+      "Tên của khoản được trừ"
+    ],
+    "start_threshold": 85,
+    "end_threshold": 85,
+    "extraction_rules": [
+      {
+          "field_name": "so_ky_hieu_tai_lieu",
+          "extraction_method": "global_regex",
+          "anchor_scan_limit": 6, 
+          "skip_to_anchor": [
+              "Độc lập - Tự do",
+              "CỘNG HÒA XÃ HỘI"
+          ],
+          "scan_limit": 5,
+          "pattern": "(?im).*?S[ỐốổoO][\\s:.,\\-]*([0-9]+(?:[\\.\\s]+[0-9]+)*[a-zA-ZĐđ\\-]*)(?:/.*)?",
+          "post_processing": [
+              "format_with_suffix|/PCTTĐC"
+          ],
+          "data_type": "string"
+      },
+      {
+        "field_name": "ngay_thang_van_ban",
+        "extraction_method": "proximity_number_search",
+        "anchor_keywords": [
+            "PHIẾU CHUYỂN THÔNG TIN",
+            "Kính gửi"
+        ],
+        "scan_limit": 10,
+        "scan_direction": "top_down",
+        "look_up_lines": 3,
+        "context_direction": "above",
+        "date_format_mode": "text_only",
+        "post_processing": [
+            "fix_ocr_date_typos",
+            "clean_targeted_punctuation",
+            "extract_date_from_mixed_text"
+        ]
+      },
+      {
+        "field_name": "ten_loai_tai_lieu",
+        "extraction_method": "fixed_value",
+        "value": "Phiếu chuyển thông tin để xác định nghĩa vụ tài chính về đất đai"
+      },
+      {
+        "field_name": "tac_gia",
+        "extraction_method": "global_dictionary_match",
+        "master_data": "dictionaries/dict_co_quan.txt",
+        "match_threshold": 85
+      }
+    ]
+  }

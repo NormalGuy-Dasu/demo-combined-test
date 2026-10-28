@@ -1,0 +1,52 @@
+{
+    "document_type": "bien_lai_thu_le_phi_truoc_ba",
+    "document_name": "Biên lai thu lệ phí trước bạ",
+    "start_triggers": [
+        "BIÊN LAI THU LỆ PHÍ TRƯỚC BẠ"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 15,
+    
+    "end_triggers": [
+        "Người thu tiền"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "pattern": "\\b\\d{7}\\b",
+            "scan_direction": "top_down",
+            "scan_limit": 7
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Người thu tiền"
+            ],
+            "scan_limit": 6,
+            "scan_direction": "bottom_up",
+            "context_direction": "above",
+            "look_up_lines": 2,
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Biên lai thu lệ phí trước bạ"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "CCT"
+        }
+    ]
+}

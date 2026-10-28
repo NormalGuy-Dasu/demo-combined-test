@@ -1,0 +1,39 @@
+{
+    "document_type": "hop_dong_uy_quyen",
+    "document_name": "Hợp đồng ủy quyền",
+    "start_triggers": [
+        "ỦY QUYỀN"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 4,
+    
+    "end_triggers": [
+        "ĐIỀU I",
+        "với những thỏa thuận sau đây"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Hợp đồng ủy quyền"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Phòng Công chứng"
+        }
+    ]
+}

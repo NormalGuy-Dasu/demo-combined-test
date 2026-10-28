@@ -1,0 +1,69 @@
+{
+    "document_type": "giay_chung_nhan_quyen_so_huu_nha_o",
+    "document_name": "Giấy chứng nhận quyền sở hữu nhà ở",
+    "start_triggers": [
+        "QUYỀN SỞ HỮU NHÀ Ở"
+    ],
+    "radar_lines": 20,
+    "exclude_triggers": [
+        "I.Người sử dụng đất, chủ sở hữu nhà ở và tài sản khác gắn liền với đất",
+        "VÀ QUYỀN SỬ DỤNG ĐẤT Ở"
+    ],
+    "start_threshold": 85,
+    "end_triggers": [
+        "Hồ sơ gốc số"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "TM. Ủy ban nhân dân"
+            ],
+            "scan_limit": 7,
+            "scan_direction": "bottom_up",
+            "look_up_lines": 2,
+            "context_direction": "above",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_string_with_conditional_append",
+            "base_string": "Giấy chứng nhận quyền sở hữu nhà ở",
+            "conditions": [
+                {
+                    "keyword": "THU HỒI",
+                    "append_string": " (Đã thu hồi)",
+                    "threshold": 80
+                },
+                {
+                    "keyword": "BẢN SAO",
+                    "append_string": " (Bản sao)",
+                    "threshold": 80
+                },
+                {
+                    "keyword": "BANSAO",
+                    "append_string": " (Bản sao)",
+                    "threshold": 80
+                }
+            ]
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "global_dictionary_match",
+            "master_data": "dictionaries/dict_co_quan.txt",
+            "match_threshold": 0.7
+        }
+    ]
+}

@@ -1,0 +1,64 @@
+{
+    "document_type": "thong_bao_nop_le_phi_truoc_ba_nha_dat",
+    "document_name": "Thông báo nộp lệ phí trước bạ nhà, đất",
+    "start_triggers": [
+        "THÔNG BÁO NỘP LỆ PHÍ TRƯỚC BẠ NHÀ, ĐẤT"
+    ],
+    "radar_lines": 12,
+    "exclude_triggers": [
+        "Nộp thuế thu nhập cá nhân"
+    ],
+    "start_threshold": 85,
+    "end_triggers": [
+        "THỦ TRƯỞNG CƠ QUAN THU TIỀN",
+        "PHẦN XỬ LÝ PHẠT CHẬM"
+    ],
+    "end_threshold": 95,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "anchor_scan_limit": 6, 
+            "skip_to_anchor": [
+                "CỤC THUẾ",
+                "CỘNG HÒA XÃ HỘI"
+            ],
+            "scan_limit": 4,
+            "pattern": "(?im)^(?!.*m[ẫẫu])(?!.*th[ửu]a).*?S[ỐốổoO][\\s:.,\\-]*([0-9\\.]+[a-zA-ZĐđ]*(?:[/\\-][a-zA-ZĐđ0-9/\\-]+|[\\s\\.\\-]+[a-zA-ZĐđ0-9]+[/\\-][a-zA-ZĐđ0-9/\\-]+)?)",
+            "post_processing": [
+                "clean_so_ky_hieu"
+            ],
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "THÔNG BÁO NỘP LỆ PHÍ TRƯỚC BẠ NHÀ ĐẤT"
+            ],
+            "scan_direction": "top_down",
+            "context_direction": "above",
+            "look_up_lines": 4,
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ],
+            "data_type": "string"
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Thông báo nộp lệ phí trước bạ nhà, đất",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "hybrid_dictionary_regex",
+            "master_data": "dictionaries/dict_co_quan.txt",
+            "scan_direction": "top_down",
+            "scan_limit": 7
+        }
+    ]
+}

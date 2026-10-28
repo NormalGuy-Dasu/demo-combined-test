@@ -1,0 +1,53 @@
+{
+    "document_type": "don_de_nghi_cap_gcn",
+    "document_name": "Đơn đề nghị cấp giấy chứng nhận QSDĐ",
+    "start_triggers": [
+        "ĐƠN ĐỀ NGHỊ CẤP GIẤY"
+    ],
+    "radar_lines": 35,
+    "exclude_triggers": [
+        "PHIẾU KIỂM SOÁT"
+    ],
+    "start_threshold": 80,
+    "end_triggers": [
+        "Cán bộ thẩm tra",
+        "Giám đốc",
+        "Ý KIẾN CỦA VĂN PHÒNG"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)Mẫu số\\s*(\\S+)",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Giám đốc",
+                "TM. Ủy ban nhân dân"
+            ],
+            "look_up_lines": 2,
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Đơn đề nghị cấp giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "inherit_from_context",
+            "context_key": "ten_chu_so_huu",
+            "data_type": "string"
+        }
+    ]
+}

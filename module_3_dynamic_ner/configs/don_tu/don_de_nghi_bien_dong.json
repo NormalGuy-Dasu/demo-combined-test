@@ -1,0 +1,45 @@
+{
+    "document_type": "don_de_nghi_bien_dong",
+    "document_name": "Đơn đề nghị đăng ký biến động về quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất",
+    "start_triggers": [
+        "ĐƠN ĐỀ NGHỊ ĐĂNG KÝ BIẾN ĐỘNG"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 20,
+    
+    "end_triggers": [
+        "Giám đốc",
+        "(Ký tên, đóng dấu)"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)Mẫu số\\s*(\\S+)",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Giám đốc",
+                "Người thẩm tra"
+            ],
+            "look_up_lines": 2
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Đơn đề nghị đăng ký biến động về quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "inherit_from_context",
+            "context_key": "ten_chu_so_huu",
+            "data_type": "string"
+        }
+    ]
+}

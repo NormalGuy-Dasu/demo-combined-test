@@ -1,0 +1,52 @@
+{
+    "document_type": "don_xin_chuyen_nhuong_quyen_sdd",
+    "document_name": "Đơn xin chuyển nhượng quyền sử dụng ruộng ruộng đất",
+    "start_triggers": [
+        "ĐƠN XIN CHUYỂN NHƯỢNG QUYỀN"
+    ],
+    "exclude_triggers": [
+        "quyền sử dụng đất",
+        "GIẤY CHUYỂN NHƯỢNG ĐẤT"
+    ],
+    "start_threshold": 85,
+    "radar_lines": 10,
+    "end_triggers": [
+        "Ban Nông Nghiệp xã"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Ban Nông Nghiệp"
+            ],
+            "scan_direction": "bottom_up",
+            "context_direction": "below",
+            "look_up_lines": 4,
+            "date_format_mode": "symbol_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Đơn xin chuyển nhượng quyền sử dụng ruộng đất"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)Tôi đứng tên dưới đây là\\s*:\\s*(.*?)\\s*(?:Sinh năm|sinh).*?(?:Vợ|Chồng)\\s*tên\\s*:\\s*(.*?)\\s*(?:Cùng con|\\n|$)",
+            "group_separator": " và ",
+            "data_type": "string"
+        }
+    ]
+}

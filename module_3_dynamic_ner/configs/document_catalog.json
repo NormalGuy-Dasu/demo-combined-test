@@ -1,0 +1,15 @@
+{
+  "catalogs": [
+    {
+      "document_type": "muc_luc_van_ban",
+      "description": "Mục lục văn bản tài liệu của cơ quan hành chính đất đai",
+      "trigger_keywords": [
+        "MỤC LỤC VĂN BẢN, TÀI LIỆU",
+        "Số, ký hiệu hồ sơ",
+        "Năm/Giai đoạn"
+      ],
+      "match_threshold": 0.85,
+      "target_config_file": "muc_luc_van_ban.json"
+    }
+  ]
+}

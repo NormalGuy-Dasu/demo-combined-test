@@ -1,0 +1,54 @@
+{
+    "document_type": "ban_hop_dong_mua_ban_dat",
+    "document_name": "Bản hợp đồng mua bán đất",
+    "start_triggers": [
+        "BẢN HỢP ĐỒNG MUA BÁN ĐẤT"
+    ],
+    "radar_lines": 4,
+    "exclude_triggers": [
+    ],
+    "start_threshold": 85,
+    "end_triggers": [
+        "Người mua đất",
+        "người bán đất" 
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Người bán đất",
+                "Người mua đất"
+            ],
+            "scan_limit": 7,
+            "scan_direction": "bottom_up",
+            "look_up_lines": 4,
+            "context_direction": "above",
+            "date_format_mode": "symbol_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Bản hợp đồng mua bán đất",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "inherit_from_context",
+            "context_key": "ten_chu_so_huu",
+            "data_type": "string"
+        }
+    ]
+}

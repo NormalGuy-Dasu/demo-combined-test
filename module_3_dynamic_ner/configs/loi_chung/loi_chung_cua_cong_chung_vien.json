@@ -1,0 +1,42 @@
+{
+    "document_type": "loi_chung_cua_cong_chung_vien",
+    "document_name": "Lời chứng của công chứng viên",
+    "start_triggers": [
+        "LỜI CHỨNG CỦA CÔNG CHỨNG VIÊN",
+        "Chứng nhân"
+    ],
+    "radar_lines": 10,
+    "exclude_triggers": [
+    ],
+    "start_threshold": 70,
+    "end_triggers": [
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "pattern": "(?is).*s[ốổoO]\\s*c[ôo]ng\\s*ch[ứu]ng[\\s:.,\\-]*([^\\n]*?)(?=\\s*q[uư]y.n|\\n|$)",
+            "post_processing": [
+                "fix_ocr_number_typos",
+                "clean_so_cong_chung"
+            ],
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Lời chứng của công chứng viên"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Phòng Công chứng"
+        }
+    ]
+}

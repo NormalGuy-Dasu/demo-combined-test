@@ -1,0 +1,51 @@
+{
+    "document_type": "danh_sach_chinh_li_bien_dong",
+    "document_name": "Danh sách chỉnh lí biến động",
+    "start_triggers": [
+        "DANH SÁCH CHỈNH LÍ BIẾN ĐỘNG"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 5,
+    "end_triggers": [
+        "Cán bộ Địa chính"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Cán bộ Địa chính",
+                "Chủ Tịch"
+            ],
+            "scan_limit": 10,
+            "scan_direction": "bottom_up",
+            "look_up_lines": 2,
+            "context_direction": "above",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Danh sách chỉnh lí biến động"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "hybrid_dictionary_regex",
+            "master_data": "dictionaries/dict_co_quan.txt",
+            "scan_direction": "top_down",
+            "scan_limit": 3
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "document_type": "phieu_kiem_soat_qua_trinh_giai_quyet_ho_so",
+    "document_name": "Phiếu kiểm soát quá trình giải quyết hồ sơ",
+    
+    "start_triggers": [
+        "GIẢI QUYẾT HỒ SƠ"
+    ],
+    "start_threshold": 85,
+    
+    "end_triggers": [
+        "Người giao",
+        "Người nhận"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "KSGQHS"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "PHIẾU KIỂM SOÁT",
+                "GIẢI QUYẾT HỒ SƠ"
+            ],
+            "scan_limit": 10,
+            "scan_direction": "top_down",
+            "look_up_lines": 2,
+            "context_direction": "above",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Phiếu kiểm soát quá trình giải quyết hồ sơ"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Bộ phận tiếp nhận và trả kết quả"
+        }
+    ]
+}

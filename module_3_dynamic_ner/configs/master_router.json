@@ -1,0 +1,28 @@
+{
+    "master_radar_lines": 30,
+    "master_threshold": 90,
+    "routes": {
+      "ban_do_trich_luc": ["BẢN ĐỒ", "TRÍCH LỤC", "TRÍCH ĐO", "SƠ ĐỒ"],
+      "ban_hop_dong": ["HỢP ĐỒNG"],
+      "bia_ho_so": ["BÌA HỒ SƠ"],
+      "bien_ban": ["BIÊN BẢN"],
+      "bien_lai": ["BIÊN LAI"],
+      "danh_sach": ["DANH SÁCH"],
+      "don_tu": ["ĐƠN ĐỀ NGHỊ", "ĐƠN XIN"],
+      "giay_nop_tien": ["GIẤY NỘP TIỀN"],
+      "giay_chung_nhan": ["GIẤY CHỨNG NHẬN"],
+      "giay_chung_tu": ["CHỨNG TỬ"],
+      "giay_chuyen_nhuong": ["GIẤY CHUYỂN NHƯỢNG"],
+      "giay_xac_nhan": ["GIẤY XÁC NHẬN"],
+      "phan_tinh_gia_tri": ["PHẦN TÍNH LỆ PHÍ", "PHẦN XÁC ĐỊNH GIÁ TRỊ"],
+      "phieu_chuyen_thong_tin": ["PHIẾU CHUYỂN THÔNG TIN"],
+      "phieu_kiem_soat": ["PHIẾU KIỂM SOÁT"],
+      "phieu_tham_dinh": ["PHIẾU THẨM ĐỊNH", "[PHIẾU THẢM ĐỊNH"],
+      "quyet_dinh": ["QUYẾT ĐỊNH"],
+      "thong_bao": ["THÔNG BÁO"],
+      "to_khai": ["TỜ KHAI"],
+      "to_trinh": ["TỜ TRÌNH"],
+      "van_ban": ["VĂN BẢN", "VĂN BẢN CAM KẾT", "VĂN BẢN THỎA THUẬN"],
+      "loi_chung": ["LỜI CHỨNG"]
+    }
+  }

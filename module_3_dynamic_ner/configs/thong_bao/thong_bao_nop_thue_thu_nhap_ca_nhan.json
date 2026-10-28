@@ -1,0 +1,61 @@
+{
+    "document_type": "thong_bao_nop_thue_thu_nhap_ca_nhan",
+    "document_name": "Thông báo nộp thuế thu nhập cá nhân",
+    "start_triggers": [
+        "Nộp thuế thu nhập cá nhân"
+    ],
+    "exclude_triggers": [
+        "Miễn thuế"
+    ],
+    "start_threshold": 85,
+    "radar_lines": 15,
+    "end_triggers": [
+        "THỦ TRƯỞNG CƠ QUAN THU TIỀN",
+        "PHẦN XỬ LÝ PHẠT CHẬM NỘP TIỀN THUẾ"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "anchor_scan_limit": 6, 
+            "skip_to_anchor": [
+                "CỤC THUẾ",
+                "CỘNG HÒA XÃ HỘI"
+            ],
+            "scan_limit": 4,
+            "pattern": "(?im).*?S[ỐốổoO][\\s:.,\\-]*([0-9]+(?:[\\.\\s]+[0-9]+)*[a-zA-ZĐđ\\-]*)(?:/.*)?",
+            "post_processing": [
+                "format_with_suffix|/TB_CCT"
+            ],
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "THÔNG BÁO"
+            ],
+            "scan_direction": "top_down",
+            "context_direction": "above",
+            "look_up_lines": 4,
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Thông báo nộp thuế thu nhập cá nhân"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "global_dictionary_match",
+            "master_data": "dictionaries/dict_co_quan.txt",
+            "match_threshold": 0.85
+        }
+    ]
+}

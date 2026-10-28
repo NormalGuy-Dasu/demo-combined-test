@@ -1,0 +1,53 @@
+{
+    "document_type": "van_ban_khai_nhan_tai_san_thua_ke_theo_di_chuc,",
+    "document_name": "Văn bản khai nhận tài sản thừa kế theo di chúc",
+    "start_triggers": [
+        "KHAI NHẬN TÀI SẢN THỪA KẾ"
+    ],
+    "start_threshold": 85,
+    "radar_lines": 10,
+    "exclude_triggers": [
+    ],
+    "end_triggers": [
+        "CHÚNG TÔI GỒM CÓ", 
+        "Di sản của"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_string_with_conditional_append",
+            "base_string": "Văn bản khai nhận tài sản thừa kế theo di chúc",
+            "conditions": [
+                {
+                    "keyword": "Trùng thừa",
+                    "append_string": " (Trùng thừa)",
+                    "threshold": 85
+                },
+                {
+                    "keyword": "Trung thua",
+                    "append_string": " (Trùng thừa)",
+                    "threshold": 85
+                }
+            ],
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)D[iìíịỉĩ]\\s*s.n\\s*c.a\\s*(?:ông|bà|ong|ba)\\s+([^)\\n\\.,;]+)",
+            "data_type": "string"
+        }
+    ]
+}

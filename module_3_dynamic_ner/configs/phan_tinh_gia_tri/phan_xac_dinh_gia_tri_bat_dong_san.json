@@ -1,0 +1,51 @@
+{
+    "document_type": "phan_xac_dinh_gia_tri_bat_dong_san",
+    "document_name": "Phần xác định giá trị bất động sản và tính thuế của cơ quan thuế",
+    "start_triggers": [
+        "PHẦN XÁC ĐỊNH GIÁ TRỊ BẤT ĐỘNG SẢN"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 3,
+    
+    "end_triggers": [
+        "THỦ TRƯỞNG CƠ QUAN THUẾ",
+        "Xác nhận của cơ quan thuế"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "THỦ TRƯỞNG CƠ QUAN THUẾ"
+            ],
+            "scan_limit": 15,
+            "scan_direction": "bottom_up",
+            "look_up_lines": 2,
+            "context_direction": "above",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Phần xác định giá trị bất động sản và tính thuế của cơ quan thuế"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "CCT"
+        }
+    ]
+}

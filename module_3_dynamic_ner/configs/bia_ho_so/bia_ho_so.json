@@ -1,0 +1,44 @@
+{
+    "document_type": "bia_ho_so_chinh_ly",
+    "document_name": "Bìa Hồ Sơ Chỉnh Lý Biến Động",
+    
+    "start_triggers": [
+        "Hồ sơ chỉnh lý biến động"
+    ],
+    "start_threshold": 85,
+    
+    "end_triggers": [
+        "THỜI HẠN BẢO QUẢN", 
+        "Vĩnh viễn"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Hồ sơ số",
+            "value_regex": "(\\d{5,})", 
+            "match_threshold": 80
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "extract_between_anchors",
+            "start_anchor": "HỒ SƠ",
+            "end_anchor": "(Từ ngày",
+            "strict_start": true,
+            "strict_end": false,
+            "match_threshold": 85
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": ""
+        }
+    ]
+}

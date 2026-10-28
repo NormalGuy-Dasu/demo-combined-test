@@ -1,0 +1,48 @@
+{
+    "document_type": "giay_chung_tu",
+    "document_name": "Giấy chứng tử",
+    "start_triggers": [
+        "GIẤY CHỨNG TỬ"
+    ],
+    "start_threshold": 85,
+    "radar_lines": 35,
+    "exclude_triggers": [
+    ],
+    "end_triggers": [
+        "NGƯỜI KÝ BẢN SAO GIẤY CHỨNG TỬ"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "VIỆT NAM",
+            "value_regex": "([0-9]+/[0-9]{4})",
+            "match_threshold": 80
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "ghi rõ họ tên"
+            ],
+            "look_up_lines": 5
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_string_with_conditional_append",
+            "base_string": "Giấy chứng tử",
+            "conditional_keyword": "(BẢN SAO)",
+            "append_string": " (bản sao)",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Chủ tịch:",
+            "value_regex": "^(.*?)\\s*(?:[a-z\\W_]\\s*)?Chủ tịch:",
+            "match_threshold": 80
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "document_type": "ban_do_dia_chinh_khu_dat",
+    "document_name": "Bản đồ địa chính khu đất",
+    "start_triggers": [
+        "BẢN ĐỒ ĐỊA CHÍNH"
+    ],
+    "radar_lines": 5,
+    "exclude_triggers": [
+        "TRÍCH ĐO",
+        "TRÍCH DO",
+        "MẪU TRÍCH LỤC",
+        "TRÍCH LỤC"
+    ],
+    "start_threshold": 90,
+    "end_triggers": [
+        "Người trích lục",
+        "Người kiểm tra",
+        "Giám đốc"
+    ],
+    "end_threshold": 80,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Giám đốc",
+                "Người Kiểm tra",
+                "Người đo vẽ"
+            ],
+            "look_up_lines": 2
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Bản đồ địa chính khu đất",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Văn phòng Đăng ký đất đai",
+            "data_type": "string"
+        }
+    ]
+}

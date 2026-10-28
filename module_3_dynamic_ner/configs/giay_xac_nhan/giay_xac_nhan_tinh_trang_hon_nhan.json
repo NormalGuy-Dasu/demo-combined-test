@@ -1,0 +1,61 @@
+{
+    "document_type": "giay_xac_nhan_tinh_trang_hon_nhan",
+    "start_triggers": [
+      "TÌNH TRẠNG HÔN NHÂN"
+    ],
+    "radar_lines": 15,
+    "exclude_triggers": [
+        
+    ],
+    "end_triggers": [
+      "NGƯỜI KÝ GIẤY XÁC NHẬN",
+      "Giấy này có giá trị sử dụng trong thời hạn"
+    ],
+    "start_threshold": 85,
+    "end_threshold": 85,
+    "extraction_rules": [
+      {
+          "field_name": "so_ky_hieu_tai_lieu",
+          "extraction_method": "global_regex",
+          "anchor_scan_limit": 6, 
+          "skip_to_anchor": [
+              "Độc lập - Tự do",
+              "CỘNG HÒA XÃ HỘI"
+          ],
+          "scan_limit": 5,
+          "pattern": "(?im).*?S[ỐốổoO][\\s:.,\\-]*([0-9]+(?:[\\.\\s]+[0-9]+)*[a-zA-ZĐđ\\-]*)(?:/.*)?",
+          "post_processing": [
+              "format_with_suffix|/UBND-XNTTHN"
+          ],
+          "data_type": "string"
+      },
+      {
+        "field_name": "ngay_thang_van_ban",
+        "extraction_method": "proximity_number_search",
+        "anchor_keywords": [
+            "GIẤY XÁC NHẬN TÌNH TRẠNG HÔN NHÂN"
+        ],
+        "scan_limit": 10,
+        "scan_direction": "top_down",
+        "look_up_lines": 3,
+        "context_direction": "above",
+        "date_format_mode": "text_only",
+        "post_processing": [
+            "fix_ocr_date_typos",
+            "clean_targeted_punctuation",
+            "extract_date_from_mixed_text"
+        ]
+      },
+      {
+        "field_name": "ten_loai_tai_lieu",
+        "extraction_method": "fixed_value",
+        "value": "Giấy xác nhận tình trạng hôn nhân"
+      },
+      {
+        "field_name": "tac_gia",
+        "extraction_method": "global_dictionary_match",
+        "master_data": "dictionaries/dict_co_quan_cap_xa.txt",
+        "match_threshold": 85
+      }
+    ]
+  }

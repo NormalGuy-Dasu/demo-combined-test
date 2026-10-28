@@ -1,0 +1,42 @@
+{
+    "document_type": "phieu_kiem_soat_qua_trinh_dk_thua_ke_qsdd",
+    "document_name": "Phiếu kiểm soát quá trình đăng ký thừa kế QSDD",
+    
+    "start_triggers": [
+        "HỒ SƠ ĐĂNG KÝ THỪA KẾ QSĐĐ, QSHTS GẮN LIỀN VỚI ĐẤT"
+    ],
+    "start_threshold": 85,
+    
+    "end_triggers": [
+        "Cập nhật, chỉnh lý các loại sổ",
+        "kết quả."
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Số hồ sơ",
+            "value_regex": "Số hồ sơ[:\\.\\s]*([0-9]+)",
+            "match_threshold": 80
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Phiếu kiểm soát hồ sơ đăng ký thừa kế QSDĐ, QSHTS gắn liền với đất"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Người nộp hồ sơ",
+            "value_regex": "Người nộp hồ sơ[:\\.\\s]*(.*?)\\s*(?:Ngày nhận|$)",
+            "match_threshold": 80
+        }
+    ]
+}

@@ -1,0 +1,62 @@
+{
+    "document_type": "giay_chung_nhan_quyen_sdd",
+    "document_name": "Giấy chứng nhận quyền sử dụng đất",
+    "start_triggers": [
+        "QUYỀN SỬ DỤNG ĐẤT"
+    ],
+    "radar_lines": 15,
+    "exclude_triggers": [
+        "Nội dung thay đổi",
+        "và cơ sở pháp lý",
+        "Xác nhận của cơ quan",
+        "có thẩm quyền",
+        "I.Người sử dụng đất, chủ sở hữu nhà ở và tài sản khác gắn liền với đất",
+        "QUYỀN SỞ HỮU NHÀ Ở"
+    ],
+    "start_threshold": 70,
+    "end_triggers": [
+        "Số AĐ"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)S[ỐổoO]\\s*[a-zA-ZĐđ]+\\s*(\\d+)",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_string_with_conditional_append",
+            "base_string": "Giấy chứng nhận quyền sử dụng đất",
+            "conditions": [
+                {
+                    "keyword": "THU HỒI",
+                    "append_string": " (Đã thu hồi)",
+                    "threshold": 80
+                },
+                {
+                    "keyword": "BẢN SAO",
+                    "append_string": " (Bản sao)",
+                    "threshold": 80
+                },
+                {
+                    "keyword": "BANSAO",
+                    "append_string": " (Bản sao)",
+                    "threshold": 80
+                }
+            ],
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": ""
+        }
+    ]
+}

@@ -1,0 +1,42 @@
+{
+    "document_type": "to_khai_thue_su_dung_dat_phi_nong_nghiep",
+    "document_name": "Tờ khai thuế sử dụng đất phi nông nghiệp",
+    
+    "start_triggers": [
+        "THUẾ SỬ DỤNG ĐẤT PHI NÔNG NGHIỆP"
+    ],
+    "start_threshold": 85,
+    
+    "end_triggers": [
+        "NGƯỜI NỘP THUẾ hoặc",
+        "ĐẠI DIỆN HỢP PHÁP CỦA NGƯỜI NỘP THUẾ"
+    ],
+    "end_threshold": 80,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Mẫu số:",
+            "value_regex": "(?i)s[ốổoO][\\s:.,]+(.+)",
+            "match_threshold": 80
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Tờ khai thuế sử dụng đất phi nông nghiệp"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "[04] Họ và tên",
+            "value_regex": ":\\s*(.+)",
+            "match_threshold": 80
+        }
+    ]
+}

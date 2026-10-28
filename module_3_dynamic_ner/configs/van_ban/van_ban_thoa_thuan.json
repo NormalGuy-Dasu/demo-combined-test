@@ -1,0 +1,38 @@
+{
+    "document_type": "van_ban_thoa_thuan_phan_chia_di_san",
+    "document_name": "Văn bản thỏa thuận phân chia tài sản thừa kế",
+    
+    "start_triggers": [
+        "VĂN BẢN THOẢ THUẬN PHÂN CHIA"
+    ],
+    "start_threshold": 85,
+    
+    "end_triggers": [
+        "CÔNG CHỨNG VIÊN", 
+        "Người tham gia thỏa thuận"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Văn bản thỏa thuận phân chia tài sản thừa kế"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": ""
+        }
+    ]
+}

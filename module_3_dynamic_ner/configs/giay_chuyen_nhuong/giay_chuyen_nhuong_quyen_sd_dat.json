@@ -1,0 +1,45 @@
+{
+    "document_type": "giay_chuyen_nhuong_quyen_sd_dat",
+    "document_name": "Giấy chuyển nhượng quyền sử dụng đất",
+    "start_triggers": [
+        "Giấy chuyển nhượng quyền sử dụng đất"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 4,
+    "end_triggers": [
+        "Người làm chứng"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Người chuyển nhượng"
+            ],
+            "look_up_lines": 4,
+            "context_direction": "above",
+            "scan_direction": "bottom_up", 
+            "post_processing": [
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Giấy chuyển nhượng quyền sử dụng đất"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)(?:Tôi tên|Tên tôi là|Chúng tôi|Tôi)\\s*:\\s*(.*?)\\s*(?:,|sinh năm|năm sinh|CMND|CCCD|hiện ngụ|nghề nghiệp|\\n|$)",
+            "data_type": "string"
+        }
+    ]
+}

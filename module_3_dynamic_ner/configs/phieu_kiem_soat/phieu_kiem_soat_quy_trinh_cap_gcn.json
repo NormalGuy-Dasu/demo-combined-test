@@ -1,0 +1,41 @@
+{
+    "document_type": "phieu_kiem_soat_quy_trinh_cap_gcn",
+    "document_name": "Phiếu kiểm soát quy trình cấp gcn",
+    "start_triggers": [
+        "Quy trình cấp giấy chứng nhận đối với trường hợp thửa đất không có tài sản gắn liền"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 9,
+    "end_triggers": [
+        "Trả kết quả cho người dân"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Số hồ sơ:",
+            "value_regex": "Số hồ sơ:\\s*(\\S+(?:\\s*[\\/\\-]\\s*\\S+)*)",
+            "match_threshold": 50
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Phiếu kiểm soát quá trình giải quyết hồ sơ cấp giấy chứng nhận"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "hybrid_dictionary_regex",
+            "master_data": "dictionaries/dict_co_quan_cap_xa.txt",
+            "skip_lines": 0,
+            "scan_direction": "top_down",
+            "scan_limit": 5
+        }
+    ]
+}

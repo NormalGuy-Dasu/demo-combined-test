@@ -1,0 +1,81 @@
+{
+    "document_type": "giay_chung_nhan_qsdd_qshn_va_tsk",
+    "document_name": "Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất",
+    "force_restart_on_same_trigger": true,
+    "is_dossier_boundary": true,
+    "start_triggers": [
+        "TÀI SẢN KHÁC GẮN LIỀN VỚI ĐẤT",
+        "TÀI SẢN KIẾN VỚI ĐẤT"
+    ],
+    "radar_lines": 35,
+    "exclude_triggers": [
+    ],
+    "start_threshold": 80,
+    "end_triggers": [
+        "TM. ỦY BAN NHÂN DÂN",
+        "Số vào sổ cấp GCN:",
+        "KT. GIÁM ĐỐC", 
+        "PHÓ GIÁM ĐỐC"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)\\b(?:[A-Z]{2}|S[ỐO]X?)[.\\s]*\\d{5,6}\\b",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "TM. ỦY BAN NHÂN DÂN",
+                "CHỦ TỊCH"
+            ],
+            "look_up_lines": 3,
+            "scan_direction": "top_down",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_string_with_conditional_append",
+            "base_string": "Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất",
+            "conditions": [
+                {
+                    "keyword": "THU HỒI",
+                    "append_string": " (Đã thu hồi)",
+                    "threshold": 80
+                },
+                {
+                    "keyword": "BẢN SAO",
+                    "append_string": " (Bản sao)",
+                    "threshold": 80
+                },
+                {
+                    "keyword": "BANSAO",
+                    "append_string": " (Bản sao)",
+                    "threshold": 80
+                }
+            ],
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "global_dictionary_match",
+            "master_data": "dictionaries/dict_co_quan.txt",
+            "match_threshold": 0.7
+        },
+        {
+            "field_name": "thong_tin_chu_so_huu_an",
+            "extraction_method": "global_regex",
+            "pattern": "(?im)Người sử dụng đất[\\s\\S]{0,80}?(?:Hộ ông|Hộ bà|Ông|Bà|Hộ)\\s+([^,\\n]+)",
+            "export_to_context": "ten_chu_so_huu",
+            "data_type": "string"
+        }
+    ]
+}

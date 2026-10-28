@@ -1,0 +1,51 @@
+{
+    "document_type": "bien_ban_xet_duyet_hoi_dong_tu_van_dat_dai",
+    "document_name": "Biên bản xét duyệt của hội đồng tư vấn đất đai",
+    "start_triggers": [
+        "XÉT DUYỆT CỦA HỘI ĐỒNG TƯ VẤN ĐẤT ĐAI"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 10,
+    "end_triggers": [
+        "Chủ tịch hội đồng",
+        "Thư ký hội đồng"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Thành phần tham dự"
+            ],
+            "scan_limit": 7,
+            "scan_direction": "top_down",
+            "look_up_lines": 2,
+            "context_direction": "above",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Biên bản xét duyệt của hội đồng tư vấn đất đai"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "multiline_dictionary_match",
+            "master_data": "dictionaries/dict_co_quan_multiline.txt",
+            "typo_mapping": "dictionaries/ocr_typo_mapping.json",
+            "scan_limit": 3
+        }
+    ]
+}

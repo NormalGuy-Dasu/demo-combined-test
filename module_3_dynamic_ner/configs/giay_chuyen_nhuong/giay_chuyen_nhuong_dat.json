@@ -1,0 +1,52 @@
+{
+    "document_type": "giay_chuyen_nhuong_dat",
+    "document_name": "Giấy chuyển nhượng đất",
+    "start_triggers": [
+        "GIẤY CHUYỂN NHƯỢNG ĐẤT"
+    ],
+    "exclude_triggers": [
+        "quyền sử dụng đất"
+    ],
+    "start_threshold": 85,
+    "radar_lines": 4,
+    "end_triggers": [
+        "Người bán",
+        "Người mua",
+        "Người viết đơn chuyển nhượng"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Người viết đơn chuyển nhượng"
+            ],
+            "look_up_lines": 4,
+            "context_direction": "above",
+            "scan_direction": "bottom_up",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Giấy chuyển nhượng đất"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "global_regex",
+            "pattern": "(?i)Tôi tên\\s*:\\s*(.*?)\\s*sinh.*?\\n\\s*(.*?)\\s*(?:sinh|19|\\d{4}|vợ)",
+            "group_separator": " và ",
+            "data_type": "string"
+        }
+    ]
+}

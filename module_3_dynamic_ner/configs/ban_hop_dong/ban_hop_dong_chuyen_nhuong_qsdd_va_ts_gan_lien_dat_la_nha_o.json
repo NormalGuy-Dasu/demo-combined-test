@@ -1,0 +1,38 @@
+{
+    "document_type": "ban_hop_dong_chuyen_nhuong_qsdd_va_ts_gan_lien_dat_la_nha_o",
+    "document_name": "Hợp đồng chuyển nhượng quyền sử dụng đất và tài sản gắn liền với đất (Là nhà ở)",
+    "start_triggers": [
+        "(LÀ NHÀ Ở)"
+    ],
+    "radar_lines": 10,
+    "exclude_triggers": [
+    ],
+    "start_threshold": 70,
+    "end_triggers": [
+        "Điều 1"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Hợp đồng chuyển nhượng quyền sử dụng đất và tài sản gắn liền với đất (Là nhà ở)"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Phòng Công chứng"
+        }
+    ]
+}

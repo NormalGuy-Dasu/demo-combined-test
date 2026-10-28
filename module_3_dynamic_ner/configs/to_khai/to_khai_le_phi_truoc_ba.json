@@ -1,0 +1,46 @@
+{
+    "document_type": "to_khai_le_phi_truoc_ba",
+    "document_name": "Tờ khai lệ phí trước bạ nhà, đất",
+    
+    "start_triggers": [
+        "LỆ PHÍ TRƯỚC BẠ NHÀ, ĐẤT"
+    ],
+    "start_threshold": 85,
+    
+    "end_triggers": [
+        "NGƯỜI NỘP THUẾ hoặc",
+        "ĐẠI DIỆN HỢP PHÁP CỦA NGƯỜI NỘP THUẾ"
+    ],
+    "end_threshold": 80,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Mẫu số:",
+            "value_regex": "(?:Mẫu số:\\s*)([0-9A-Za-z/]+)",
+            "match_threshold": 80
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "NGƯỜI NỘP THUẾ hoặc",
+                "NHÂN VIÊN ĐẠI LÝ THUẾ"
+            ],
+            "look_up_lines": 3
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Tờ khai lệ phí trước bạ nhà, đất"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "[04] Tên người nộp thuế",
+            "value_regex": ":\\s*(.+)",
+            "match_threshold": 85
+        }
+    ]
+}

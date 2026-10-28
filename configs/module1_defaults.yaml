@@ -1,0 +1,38 @@
+crop_deskew:
+  enabled: True
+  blur_kernel_size: 5
+  
+  # Đưa Canny về mức nhạy của Code A
+  canny_threshold1: 30  
+  canny_threshold2: 150 
+
+  # CỰC KỲ QUAN TRỌNG: Giảm Morph kernel về 7 do ảnh đã resize xuống 500px
+  morph_kernel_size: 7  
+  min_area_ratio: 0.10
+  perspective_padding: 10
+  max_skew_angle: 45.0
+
+# (Các phần dưới như enhance, detect giữ nguyên)
+
+enhance:
+  enabled: false
+  clahe:
+    clip_limit: 2.0
+    tile_grid_size: [8, 8]
+  binarize:
+    enabled: true           # true → pure black/white (tốt cho OCR engine nội bộ)
+    block_size: 11 # adaptiveThreshold block size — must be odd
+    c_constant: 2
+  denoise:
+    enabled: true
+    kernel_size: 3 # medianBlur kernel — must be odd
+
+detect:
+  blank_page:
+    enabled: true
+    white_pixel_ratio_threshold: 0.99 # Flag as blank if >= 99% pixels are white
+  orientation:
+    enabled: true
+    gradient_xy_threshold: 1.15  # SobelX/SobelY < this → flag wrong orientation (90deg)
+  barcode:
+    enabled: true

@@ -1,0 +1,52 @@
+{
+    "document_type": "phan_tinh_le_phi_truoc_ba",
+    "document_name": "Phần tính lệ phí trước bạ của cơ quan thuế",
+    "start_triggers": [
+        "PHẦN TÍNH LỆ PHÍ TRƯỚC BẠ CỦA CƠ QUAN THUẾ"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 4,
+    
+    "end_triggers": [
+        "Thủ trưởng cơ quan thuế duyệt",
+        "Cán bộ tính lệ phí trước bạ"
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Số TB:",
+            "value_regex": "(?i)số tb:\\s*(\\S+(?:\\s*[\\/\\-]\\s*\\S+)*)",
+            "match_threshold": 85
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Thủ trưởng cơ quan thuế duyệt"
+            ],
+            "scan_direction": "bottom_up",
+            "context_direction": "above",
+            "look_up_lines": 2,
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Phần tính lệ phí trước bạ của cơ quan thuế (Thay cho thông báo)"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "CCT"
+        }
+    ]
+}

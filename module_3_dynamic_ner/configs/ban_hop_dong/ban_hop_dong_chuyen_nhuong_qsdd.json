@@ -1,0 +1,43 @@
+{
+    "document_type": "ban_hop_dong_chuyen_nhuong_qsdd",
+    "document_name": "Hợp đồng chuyển nhượng quyền sử dụng đất",
+    "start_triggers": [
+        "QUYỀN SỬ DỤNG ĐẤT"
+    ],
+    "radar_lines": 7,
+    "exclude_triggers": [
+         "VÀ TÀI SẢN GẮN LIỀN VỚI ĐẤT",
+         "LÀ NHÀ Ở",
+         "HỢP ĐỒNG CHUYỂN NHƯỢNG QUYỀN SỞ HỮU NHÀ"
+    ],
+    "start_threshold": 85,
+    "end_triggers": [
+        "Thay đổi sau khi cấp giấy chứng nhận",
+        "ĐIỀU 1" 
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Hợp đồng chuyển nhượng quyền sử dụng đất",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Phòng Công chứng"
+        }
+    ]
+}

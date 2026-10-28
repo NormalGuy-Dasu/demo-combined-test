@@ -1,0 +1,54 @@
+{
+    "document_type": "trich_do_ban_do_dia_chinh_khu_dat",
+    "document_name": "Trích đo bản đồ địa chính khu đất",
+    "start_triggers": [
+        "TRÍCH ĐO BẢN ĐỒ ĐỊA CHÍNH KHU ĐẤT"
+    ],
+    "radar_lines": 3,
+    "exclude_triggers": [
+        "MẪU TRÍCH LỤC",
+        "TRÍCH LỤC"
+    ],
+    "start_threshold": 90,
+    "end_triggers": [
+        "Người đo vẽ",
+        "Giám đốc"
+    ],
+    "end_threshold": 80,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Giám đốc",
+                "Người Kiểm tra",
+                "Người đo vẽ"
+            ],
+            "look_up_lines": 4,
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Trích đo bản đồ địa chính khu đất",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Văn phòng Đăng ký đất đai",
+            "data_type": "string"
+        }
+    ]
+}

@@ -1,0 +1,53 @@
+{
+    "document_type": "giay_nop_tien_vao_ngan_sach_nha_nuoc",
+    "document_name": "Giấy nộp tiền vào ngân sách nhà nước",
+    "start_triggers": [
+        "Giấy nộp tiền"
+    ],
+    "radar_lines": 35,
+    "exclude_triggers": [
+        
+    ],
+    "start_threshold": 80,
+    "end_triggers": [
+        "Phần ngân hàng in",
+        "Giao dịch viên"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "C1-02/NS"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "Giao dịch viên",
+                "Kiểm soát viên"
+            ],
+            "scan_limit": 30,
+            "scan_direction": "bottom_up",
+            "look_up_lines": 2,
+            "context_direction": "above",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Giấy nộp tiền vào ngân sách nhà nước",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Phòng giao dịch"
+        }
+    ]
+}

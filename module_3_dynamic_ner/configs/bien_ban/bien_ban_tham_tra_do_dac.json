@@ -1,0 +1,52 @@
+{
+    "document_type": "bien_ban_tham_tra_do_dac",
+    "document_name": " Biên bản thẩm tra, đo đạc xác định ranh giới, diện tích",
+    "start_triggers": [
+        "THẨM TRA, ĐO ĐẠC XÁC ĐỊNH RANH GIỚI"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 6,
+    
+    "end_triggers": [
+        "Giám đốc",
+        "Văn Phòng Đăng Ký QSDĐ",
+        "Người kiểm tra",
+        "Người đo vẽ"
+       
+    ],
+    "end_threshold": 85,
+    
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "kết thúc vào lúc",
+                "Người kiểm tra"
+            ],
+            "look_up_lines": 2,
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "extract_date_from_mixed_text"
+            ]
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Biên bản thẩm tra, đo đạc xác định ranh giới, diện tích"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": "Văn Phòng ĐKQSDĐ"
+        }
+    ]
+}

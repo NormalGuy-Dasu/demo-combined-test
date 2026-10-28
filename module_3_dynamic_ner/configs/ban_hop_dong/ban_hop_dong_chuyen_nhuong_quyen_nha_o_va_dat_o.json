@@ -1,0 +1,41 @@
+{
+    "document_type": "ban_hop_dong_chuyen_nhuong_quyen_nha_o_va_dat_o",
+    "document_name": "Hợp đồng chuyển nhượng quyền sở hữu nhà ở và quyền sử dụng đất ở",
+    "start_triggers": [
+        "HỢP ĐỒNG CHUYỂN NHƯỢNG QUYỀN SỞ HỮU NHÀ"
+    ],
+    "radar_lines": 10,
+    "exclude_triggers": [
+    ],
+    "start_threshold": 85,
+    "end_triggers": [
+        "Thay đổi sau khi cấp giấy chứng nhận",
+        "ĐIỀU 1",
+        "QUYỀN SỬ DỤNG ĐẤT"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "",
+            "data_type": "string"
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "fixed_value",
+            "value": ""
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Hợp đồng chuyển nhượng quyền sở hữu nhà ở và quyền sử dụng đất ở",
+            "data_type": "string"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "fixed_value",
+            "value": ""
+        }
+    ]
+}

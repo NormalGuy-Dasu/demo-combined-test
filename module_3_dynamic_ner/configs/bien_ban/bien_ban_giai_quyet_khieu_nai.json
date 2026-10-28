@@ -1,0 +1,43 @@
+{
+    "document_type": "bien_ban_giai_quyet_khieu_nai",
+    "document_name": "Biên bản giải quyết khiếu nại",
+    "start_triggers": [
+        "bàn biện pháp giải quyết khiếu nại"
+    ],
+    "exclude_triggers": [],
+    "start_threshold": 85,
+    "radar_lines": 10,
+    "end_triggers": [
+        "Nơi nhận:",
+        "GHI BIÊN BẢN"
+    ],
+    "end_threshold": 85,
+    "extraction_rules": [
+        {
+            "field_name": "so_ky_hieu_tai_lieu",
+            "extraction_method": "fuzzy_key_value",
+            "anchor_keyword": "Số:",
+            "value_regex": "Số:\\s*(\\S+(?:\\s*[\\/\\-]\\s*\\S+)*)",
+            "match_threshold": 50
+        },
+        {
+            "field_name": "ngay_thang_van_ban",
+            "extraction_method": "proximity_number_search",
+            "anchor_keywords": [
+                "BIÊN BẢN"
+            ],
+            "look_up_lines": 2
+        },
+        {
+            "field_name": "ten_loai_tai_lieu",
+            "extraction_method": "fixed_value",
+            "value": "Biên bản về việc bàn biện pháp giải quyết khiếu nại"
+        },
+        {
+            "field_name": "tac_gia",
+            "extraction_method": "multiline_dictionary_match",
+            "master_data": "dictionaries/dict_co_quan_multiline.txt",
+            "scan_limit": 3
+        }
+    ]
+}

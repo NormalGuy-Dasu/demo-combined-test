@@ -1,0 +1,23 @@
+engine:
+  active: "paddle_vietocr"  # Đổi sang engine mới để chuẩn bị kích hoạt
+  use_gpu: false
+  lang: "vi"
+
+paddle:
+  det_limit_side_len: 2560
+  det_db_thresh: 0.3
+  det_db_box_thresh: 0.5
+
+vietocr:
+  config_name: "vgg_seq2seq"
+
+heuristic_sorting:
+  y_tolerance_ratio: 0.5
+
+deepdoc:
+  # Trỏ đích danh file Layout và TSR
+  yolo_layout_path: "../weights/layout.onnx"
+  yolo_tsr_path: "../weights/tsr.onnx"
+  # VietOCR chỉ cần trỏ vào thư mục, code của tác giả sẽ tự tìm cnn, encoder, decoder bên trong
+  vietocr_model_dir: "../weights"
+  confidence_threshold: 0.5

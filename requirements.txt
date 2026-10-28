@@ -1,0 +1,27 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+streamlit
+psutil
+setuptools<81
+numpy==1.26.4
+pyarrow==20.0.0
+opencv-python-headless==4.11.0.86
+paddlepaddle==2.6.2
+torch==2.2.2+cpu
+torchvision==0.17.2+cpu
+paddleocr==2.8.1
+vietocr==0.3.13
+PyMuPDF
+PyYAML
+RapidFuzz==3.14.5
+reportlab==5.0.0
+openpyxl==3.1.5
+rembg==2.0.69
+onnxruntime==1.23.2
+pyzbar==0.1.9
+pytesseract==0.3.13
+matplotlib==3.10.9
+scikit-image==0.25.2
+scipy==1.15.3
+numba==0.65.1
+llvmlite==0.47.0
+PyMatting==1.1.15
