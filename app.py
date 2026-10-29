@@ -113,6 +113,9 @@ TEXT = {
         "no_records": "This PDF was not recognised as one of the supported land-record documents, so there is nothing to show. Try one of the samples.",
         "sub_fields": "Extracted fields",
         "sub_text": "Text read from the pages",
+        "sub_boxes": "Text boxes on the pages",
+        "boxes_note": "Each red frame is a piece of text the reader found on the page.",
+        "accuracy": "This project is still being improved, so accuracy is not yet 100%. Some results may be incomplete or wrong, especially on blurry photos, unusual layouts or documents outside the supported types. Please check the output before relying on it.",
         "page_n": "Page {n}",
         "no_text": "No text was found on this page.",
         "record_n": "Record {n}",
@@ -123,7 +126,7 @@ TEXT = {
         "limits_h": "Limits",
         "limits": "Photos: JPG or PNG, up to {photo_mb} MB and {mp} megapixels.\n\nPDFs: up to {pages} pages and {pdf_mb} MB, about 12 seconds per page.\n\nOne visitor is served at a time. After a long idle time the app needs about a minute to wake up.",
         "credits_h": "Credits",
-        "credits": "Page finding and clean-up: OpenCV, U²-Net-P through rembg. QR codes: ZBar through pyzbar. Text detection: PaddleOCR. Vietnamese text recognition: VietOCR. PDF pages: PyMuPDF. Interface: Streamlit.\n\nSample photos come from the WarpDoc dataset (CVPR 2022). The QR images come from web receipts. The sample PDFs are land records edited by an AI tool. A file is removed on request.",
+        "credits": "Page finding and clean-up: OpenCV, U²-Net-P through rembg. QR codes: ZBar through pyzbar. Text detection: PaddleOCR. Vietnamese text recognition: VietOCR. PDF pages: PyMuPDF. Interface: Streamlit.\n\nSample photos come from the WarpDoc dataset (CVPR 2022). The QR images come from web receipts. A file is removed on request.",
         "col_field": "Field",
     },
     "Tiếng Việt": {
@@ -193,6 +196,9 @@ TEXT = {
         "no_records": "PDF này không được nhận ra là một trong các loại hồ sơ đất đai được hỗ trợ, nên không có gì để hiển thị. Hãy thử một trong các mẫu.",
         "sub_fields": "Thông tin trích xuất",
         "sub_text": "Chữ đọc được từ các trang",
+        "sub_boxes": "Khung chữ trên trang",
+        "boxes_note": "Mỗi khung đỏ là một đoạn chữ mà hệ thống tìm thấy trên trang.",
+        "accuracy": "Dự án vẫn đang được hoàn thiện nên độ chính xác chưa đạt 100%. Một số kết quả có thể thiếu hoặc sai, nhất là với ảnh mờ, bố cục lạ hoặc tài liệu ngoài các loại được hỗ trợ. Vui lòng kiểm tra lại kết quả trước khi sử dụng.",
         "page_n": "Trang {n}",
         "no_text": "Không tìm thấy chữ nào trên trang này.",
         "record_n": "Bản ghi {n}",
@@ -203,7 +209,7 @@ TEXT = {
         "limits_h": "Giới hạn",
         "limits": "Ảnh: JPG hoặc PNG, tối đa {photo_mb} MB và {mp} megapixel.\n\nPDF: tối đa {pages} trang và {pdf_mb} MB, khoảng 12 giây mỗi trang.\n\nMỗi lần chỉ phục vụ một người. Sau thời gian dài không ai dùng, ứng dụng cần khoảng một phút để thức dậy.",
         "credits_h": "Ghi công",
-        "credits": "Tìm tờ giấy và làm sạch ảnh: OpenCV, U²-Net-P qua rembg. Mã QR: ZBar qua pyzbar. Phát hiện chữ: PaddleOCR. Nhận dạng chữ tiếng Việt: VietOCR. Trang PDF: PyMuPDF. Giao diện: Streamlit.\n\nẢnh chụp mẫu lấy từ bộ dữ liệu WarpDoc (CVPR 2022). Ảnh QR lấy từ biên lai trên mạng. Các PDF mẫu là hồ sơ đất đã được một công cụ AI chỉnh sửa. File sẽ được gỡ khi có yêu cầu.",
+        "credits": "Tìm tờ giấy và làm sạch ảnh: OpenCV, U²-Net-P qua rembg. Mã QR: ZBar qua pyzbar. Phát hiện chữ: PaddleOCR. Nhận dạng chữ tiếng Việt: VietOCR. Trang PDF: PyMuPDF. Giao diện: Streamlit.\n\nẢnh chụp mẫu lấy từ bộ dữ liệu WarpDoc (CVPR 2022). Ảnh QR lấy từ biên lai trên mạng. File sẽ được gỡ khi có yêu cầu.",
         "col_field": "Trường",
     },
 }
@@ -437,6 +443,22 @@ def run_qr(data, eng):
 
 # ---------- Cluster 2: PDFs ----------
 
+def boxed_page(png_path, words, max_side=1000):
+    """The page image with a red frame around every text box the OCR found (JPEG bytes)."""
+    from PIL import Image, ImageDraw
+
+    im = Image.open(png_path).convert("RGB")
+    s = min(1.0, max_side / max(im.size))
+    if s < 1:
+        im = im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)
+    draw = ImageDraw.Draw(im)
+    for w in words:
+        draw.polygon([(x * s, y * s) for x, y in w["bbox"]["points"]], outline=(230, 50, 50), width=2)
+    buf = io.BytesIO()
+    im.save(buf, "JPEG", quality=78)
+    return buf.getvalue()
+
+
 def run_pipeline(data, eng, progress):
     """PDF bytes -> page images -> Module 2 -> Module 3. Never keeps files."""
     import fitz
@@ -452,7 +474,7 @@ def run_pipeline(data, eng, progress):
         doc.close()
         return {"error": "too_many_pages", "pages": n}
 
-    stream, boxes, t_render, t_ocr = [], 0, 0.0, 0.0
+    stream, boxed, boxes, t_render, t_ocr = [], [], 0, 0.0, 0.0
     with tempfile.TemporaryDirectory(prefix="demo_") as work:
         work = Path(work)
         for i in range(n):
@@ -470,6 +492,7 @@ def run_pipeline(data, eng, progress):
             d = json.loads(json.dumps(dataclasses.asdict(r), ensure_ascii=False))  # same shape as the page JSON files
             stream.append({"page_num": i + 1, "full_text": d.get("full_text", ""), "words": d.get("words", [])})
             boxes += len(d.get("words", []))
+            boxed.append(boxed_page(pdir / "page.png", d.get("words", [])))
             del res, r
             shutil.rmtree(pdir)
         doc.close()
@@ -483,6 +506,7 @@ def run_pipeline(data, eng, progress):
     return {
         "records": records,
         "page_text": [(p["page_num"], p["full_text"]) for p in stream],
+        "page_boxes": boxed,
         "total_s": round(total, 1),
         "deleted": left == 0 and not work.exists(),
         "stats": [
@@ -553,7 +577,14 @@ def show_crop(r):
         st.warning(tr("warn_blank"))
     if r["orientation"] != "LIKELY_CORRECT":
         st.info(tr("info_orient"))
-    c1, c2 = st.columns(2)
+    from PIL import Image
+
+    def aspect(jpeg):
+        w, h = Image.open(io.BytesIO(jpeg)).size
+        return min(max(w / h, 0.4), 2.5)
+
+    # column widths follow the pictures' proportions, so both come out the same height and nothing is left empty
+    c1, c2 = st.columns([aspect(r["before"]), aspect(r["after"]) if r["after"] else 1])
     c1.caption(tr("before"))
     c1.image(r["before"], width="stretch")
     c2.caption(tr("after"))
@@ -593,7 +624,7 @@ def show_pdf(r):
     if show_error(r):
         return
     records = r["records"]
-    sub_fields, sub_text = st.tabs([tr("sub_fields"), tr("sub_text")])
+    sub_fields, sub_text, sub_boxes = st.tabs([tr("sub_fields"), tr("sub_text"), tr("sub_boxes")])
     with sub_fields:
         if not records:
             st.warning(tr("no_records"))
@@ -612,6 +643,11 @@ def show_pdf(r):
         for num, text in r["page_text"]:
             with st.expander(tr("page_n", n=num)):
                 st.text(text.strip() or tr("no_text"))
+    with sub_boxes:
+        st.caption(tr("boxes_note"))
+        for num, img in enumerate(r["page_boxes"], 1):
+            with st.expander(tr("page_n", n=num)):
+                st.image(img, width="stretch")
     st.caption(tr("done_in", s=r["total_s"]))
     tech_details(r)
 
@@ -675,7 +711,8 @@ def input_block(prefix, upload_label, samples, run_label, max_mb, sample_kind, r
 CSS = """
 <style>
 :root { --accent: #6c78e6; --accent-soft: rgba(108,120,230,.13); --line: rgba(128,128,128,.28); }
-.block-container { max-width: 1080px; padding-top: 2.2rem; padding-bottom: 3rem; }
+.block-container { max-width: 1080px; padding-top: 4.6rem; padding-bottom: 3rem; }
+div[data-testid="stExpander"] p { text-align: justify; }
 .brand { font-size: 1.55rem; font-weight: 650; letter-spacing: -.01em; line-height: 1.2; }
 .brand span { color: var(--accent); }
 .tagline { opacity: .75; margin: .15rem 0 .9rem 0; }
@@ -701,7 +738,7 @@ with head_r:
 with head_l:
     st.markdown("<div class='brand'>VN-Digitize <span>AI Engine</span></div>", unsafe_allow_html=True)
     st.markdown(f"<div class='tagline'>{tr('tagline')}</div>", unsafe_allow_html=True)
-st.markdown(f"<div class='intro'>{tr('intro')}</div>", unsafe_allow_html=True)
+st.markdown(f"<div class='intro'>{tr('intro')}<br><br>{tr('accuracy')}</div>", unsafe_allow_html=True)
 
 engine = load_engines()
 for key in ("crop", "qr", "pdf"):
