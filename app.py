@@ -333,11 +333,16 @@ def pdf_gallery():
     if not cats:
         return None
     names = {c["id"]: c["name"][lang()] for c in cats}
-    cat_id = st.selectbox(tr("category"), list(names), format_func=names.get, key="pdf_category")
+    # the language is part of the widget key so the names are redrawn when the language changes; the choice is kept in session_state
+    ids = list(names)
+    chosen = st.session_state.get("pdf_cat_id", ids[0])
+    cat_id = st.selectbox(tr("category"), ids, index=ids.index(chosen) if chosen in ids else 0,
+                          format_func=names.get, key=f"pdf_category_{lang()}")
+    st.session_state["pdf_cat_id"] = cat_id
     cat = next(c for c in cats if c["id"] == cat_id)
     types = cat["types"]
     labels = {i: shown(t["name"]) for i, t in enumerate(types)}  # one button per document type, even when there is just one
-    k = st.pills(tr("doc_type"), list(labels), format_func=labels.get, default=0, key=f"pdf_type_{cat_id}")
+    k = st.pills(tr("doc_type"), list(labels), format_func=labels.get, default=0, key=f"pdf_type_{cat_id}_{lang()}")
     k = 0 if k is None else k
     typ = types[k]
     pages = pdf_pages(str(typ["path"]))
