@@ -1,0 +1,124 @@
+{
+  "categories": [
+    {
+      "id": "certificates",
+      "name": {
+        "English": "Certificates",
+        "Tiếng Việt": "Giấy chứng nhận"
+      },
+      "types": [
+        {
+          "name": "Giấy chứng nhận quyền sử dụng đất",
+          "file": "land_use_certificate.pdf"
+        }
+      ]
+    },
+    {
+      "id": "minutes",
+      "name": {
+        "English": "Minutes",
+        "Tiếng Việt": "Biên bản"
+      },
+      "types": [
+        {
+          "name": "Biên bản xét duyệt của hội đồng tư vấn đất đai",
+          "file": "council_review_minutes.pdf"
+        }
+      ]
+    },
+    {
+      "id": "decisions",
+      "name": {
+        "English": "Decisions",
+        "Tiếng Việt": "Quyết định"
+      },
+      "types": [
+        {
+          "name": "Quyết định về việc cấp giấy chứng nhận",
+          "file": "decision_issue_certificate.pdf"
+        }
+      ]
+    },
+    {
+      "id": "contracts",
+      "name": {
+        "English": "Contracts",
+        "Tiếng Việt": "Hợp đồng"
+      },
+      "types": [
+        {
+          "name": "Hợp đồng chuyển nhượng quyền sử dụng đất",
+          "file": "transfer_contract.pdf"
+        }
+      ]
+    },
+    {
+      "id": "notices",
+      "name": {
+        "English": "Notices",
+        "Tiếng Việt": "Thông báo"
+      },
+      "types": [
+        {
+          "name": "Thông báo nộp lệ phí trước bạ nhà đất",
+          "file": "registration_fee_notice.pdf"
+        }
+      ]
+    },
+    {
+      "id": "lists",
+      "name": {
+        "English": "Lists",
+        "Tiếng Việt": "Danh sách"
+      },
+      "types": [
+        {
+          "name": "Danh sách công khai cấp giấy chứng nhận",
+          "file": "public_list.pdf"
+        }
+      ]
+    },
+    {
+      "id": "control_sheets",
+      "name": {
+        "English": "Control sheets",
+        "Tiếng Việt": "Phiếu kiểm soát"
+      },
+      "types": [
+        {
+          "name": "Phiếu kiểm soát quy trình cấp giấy chứng nhận",
+          "file": "control_sheet.pdf"
+        }
+      ]
+    },
+    {
+      "id": "maps",
+      "name": {
+        "English": "Maps and extracts",
+        "Tiếng Việt": "Bản đồ, trích lục"
+      },
+      "types": [
+        {
+          "name": "Trích lục bản đồ địa chính khu đất",
+          "file": "cadastral_extract.pdf"
+        }
+      ]
+    },
+    {
+      "id": "multi",
+      "name": {
+        "English": "Several documents in one file",
+        "Tiếng Việt": "Nhiều tài liệu trong một file"
+      },
+      "types": [
+        {
+          "name": {
+            "English": "Five pages, four documents (the file is split automatically)",
+            "Tiếng Việt": "Năm trang, bốn tài liệu (file được tự động tách)"
+          },
+          "file": "multi_document.pdf"
+        }
+      ]
+    }
+  ]
+}
