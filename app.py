@@ -37,7 +37,6 @@ SHOW_MAX_SIDE = 1400
 MAX_PAGES = 5
 MAX_PDF_MB = 30
 ZOOM = 2.0
-
 SAMPLES = ROOT / "samples"
 PHOTO_SAMPLES = [SAMPLES / "photos" / f"photo_{i}.jpg" for i in (1, 2, 3, 4)]
 QR_SAMPLES = [SAMPLES / "qr" / f"qr_{i}.jpg" for i in (1, 2)]
@@ -249,6 +248,17 @@ def rss_mb():
     return round(psutil.Process().memory_info().rss / 1024 / 1024)
 
 
+def release_memory():
+    """After a run: free Python objects, then ask the C library to give unused memory back to the system."""
+    gc.collect()
+    try:
+        import ctypes
+
+        ctypes.CDLL("libc.so.6").malloc_trim(0)
+    except (OSError, AttributeError):  # not Linux, or no such function: nothing to do
+        pass
+
+
 def peak_mb():
     return round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
 
@@ -420,7 +430,7 @@ def run_crop(data, eng):
         ],
     }
     del img, res
-    gc.collect()
+    release_memory()
     return out
 
 
@@ -442,7 +452,7 @@ def run_qr(data, eng):
         "stats": [("t_size", f"{size[0]} x {size[1]}"), ("t_time", round(time.perf_counter() - t_all, 2)), ("t_mem", rss_mb()), ("t_peak", peak_mb())],
     }
     del img
-    gc.collect()
+    release_memory()
     return out
 
 
@@ -507,7 +517,7 @@ def run_pipeline(data, eng, progress):
         t_m3 = time.perf_counter() - t
         left = len(list(work.iterdir()))
     total = time.perf_counter() - t_all
-    gc.collect()
+    release_memory()
     return {
         "records": records,
         "page_text": [(p["page_num"], p["full_text"]) for p in stream],
