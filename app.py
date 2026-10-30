@@ -881,7 +881,16 @@ def show_mc(r):
             st.session_state["mc_out"] = mc_straighten(r, pts) or "bad"
     b4.markdown(f"**{tr('mc_count', n=len(pts))}**")
 
-    left, right = st.columns(2)
+    out = st.session_state.get("mc_out")
+    # column widths follow the two pictures' proportions (as in the crop tab), so both come out the same height
+    a_in = min(max(sh.width / sh.height, 0.4), 2.5)
+    a_out = a_in
+    if out and out != "bad":
+        from PIL import Image
+
+        ow, oh = Image.open(io.BytesIO(out[1])).size
+        a_out = min(max(ow / oh, 0.4), 2.5)
+    left, right = st.columns([a_in, a_out])
     with left:
         mc_component(MC_VERSION)(
             key=cmp_key,
@@ -890,7 +899,6 @@ def show_mc(r):
             on_edit_change=take_points,
         )
     with right:
-        out = st.session_state.get("mc_out")
         if out == "bad":
             st.warning(tr("mc_bad"))
         elif out:
