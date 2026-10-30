@@ -401,7 +401,7 @@ def pdf_gallery():
     k = 0 if k is None else k
     typ = types[k]
     pages = pdf_pages(str(typ["path"]))
-    with st.container(border=True):
+    with st.container(border=True, key="frame_sample"):
         st.markdown(f"**{shown(typ['name'])}**")
         st.caption(tr("pages_count", n=len(pages)))
         for start in range(0, len(pages), 3):
@@ -981,7 +981,7 @@ def show_pdf(r):
         else:
             st.success(tr("found_records", n=len(records)))
             for i, rec in enumerate(records, 1):
-                with st.container(border=True):
+                with st.container(border=True, key=f"frame_record_{i}"):
                     st.markdown(f"**{tr('record_n', n=i)}**")
                     st.markdown(kv_markdown(rec))
             d1, d2, _ = st.columns([1, 1, 4])
@@ -1091,6 +1091,14 @@ div[data-testid="stButton"] button p, div[data-testid="stDownloadButton"] button
 .stTabs [aria-selected="true"] { color: var(--accent); }
 .stTabs [data-baseweb="tab-highlight"] { background-color: var(--accent); }
 div[data-testid="stExpander"], div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 10px; }
+[class*="st-key-frame_"] { background: rgba(108,120,230,.06); border-color: rgba(108,120,230,.22); }
+div[data-testid="stExpander"] { background: rgba(108,120,230,.06); border-color: rgba(108,120,230,.22); }
+[data-testid="stFileUploaderDropzone"] { background: rgba(108,120,230,.08); border-radius: 10px; }
+button[kind="primary"] { background-color: #5563d6; border-color: #5563d6; color: #fff; font-weight: 600; }
+button[kind="primary"]:hover:not(:disabled) { background-color: #4452c4; border-color: #4452c4; color: #fff; }
+button[kind="primary"] p { color: #fff; font-weight: 600; }
+.stTabs [data-baseweb="tab-panel"] { padding-top: 1.2rem; }
+div[data-testid="stVerticalBlock"] { gap: 1.1rem; }
 div[data-testid="stButton"] > button, div[data-testid="stDownloadButton"] > button { border-radius: 8px; }
 [data-testid="stFileUploaderDropzoneInstructions"] span { display: none; }
 footer { visibility: hidden; }
