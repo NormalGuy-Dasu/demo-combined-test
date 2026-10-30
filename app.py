@@ -7,6 +7,7 @@ Thin wrapper only: it calls the project code unchanged. Both engines are loaded 
 runs at a time (one lock for both tabs), sizes and pages are limited, and nothing is kept (D-019): photos stay
 in memory, PDF pages go to a temporary folder that is deleted afterwards.
 """
+import contextlib
 import dataclasses
 import gc
 import io
@@ -55,6 +56,7 @@ TEXT = {
         "sub_crop": "Crop and straighten",
         "sub_qr": "QR code",
         "sub_mc": "Manual corners",
+        "samples_again": "Try another sample",
         "upload_mc": "Photo of a document (JPG or PNG, up to {mb} MB)",
         "run_mc": "Open the photo",
         "mc_note": "Pick the four corners of the page yourself, in any order. Useful when the automatic crop misses a corner.",
@@ -156,6 +158,7 @@ TEXT = {
         "sub_crop": "Cắt và làm thẳng",
         "sub_qr": "Mã QR",
         "sub_mc": "Chỉnh 4 góc",
+        "samples_again": "Thử mẫu khác",
         "upload_mc": "Ảnh chụp tài liệu (JPG hoặc PNG, tối đa {mb} MB)",
         "run_mc": "Mở ảnh",
         "mc_note": "Tự chọn bốn góc của trang giấy, theo thứ tự bất kỳ. Hữu ích khi cách cắt tự động bị lệch một góc.",
@@ -878,20 +881,31 @@ def input_block(prefix, upload_label, samples, run_label, max_mb, sample_kind, r
             st.error(tr("err_file_big", mb=max_mb))
         else:
             data = up.getvalue()
-    st.markdown(f"<div class='samples-title'>{tr('samples')}</div>", unsafe_allow_html=True)
-    if prefix == "pdf":
-        data = pdf_gallery() or data
+    # the manual-corner picture opens below the samples, so the samples fold away once a photo is open
+    fold = prefix == "mc"
+    if fold:
+        opened = st.session_state.get(prefix) is not None
+        # a different label makes Streamlit apply the new "expanded" value instead of keeping the old open state
+        box = st.expander(tr("samples_again" if opened else "samples"), expanded=not opened)
     else:
-        cols = st.columns(4, vertical_alignment="top")
-        for i, path in enumerate(samples):
-            with cols[i]:
-                st.image(thumbnail(str(path)), width="stretch")
-                if st.button(tr("sample_n", n=i + 1), key=f"{prefix}_sample_{i}", width="stretch"):
-                    data = path.read_bytes()
+        box = contextlib.nullcontext()
+        st.markdown(f"<div class='samples-title'>{tr('samples')}</div>", unsafe_allow_html=True)
+    with box:
+        if prefix == "pdf":
+            data = pdf_gallery() or data
+        else:
+            cols = st.columns(4, vertical_alignment="top")
+            for i, path in enumerate(samples):
+                with cols[i]:
+                    st.image(thumbnail(str(path)), width="stretch")
+                    if st.button(tr("sample_n", n=i + 1), key=f"{prefix}_sample_{i}", width="stretch"):
+                        data = path.read_bytes()
     if data is not None:
         res = runner(data)
         if res is not None:
             st.session_state[prefix] = res
+            if fold:
+                st.rerun()
 
 
 # ---------- page ----------
