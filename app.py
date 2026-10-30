@@ -1077,13 +1077,17 @@ CSS = """
 :root { --accent: #6c78e6; --accent-soft: rgba(108,120,230,.13); --line: rgba(128,128,128,.28); }
 .block-container { max-width: 1080px; padding-top: 4.6rem; padding-bottom: 3rem; }
 div[data-testid="stExpander"] p { text-align: justify; }
-.brand { font-size: 1.55rem; font-weight: 650; letter-spacing: -.01em; line-height: 1.2; }
+.brand { font-size: 1.9rem; font-weight: 650; letter-spacing: -.01em; line-height: 1.2; }
 .brand span { color: var(--accent); }
-.tagline { opacity: .75; margin: .15rem 0 .9rem 0; }
-.intro { max-width: 46rem; opacity: .9; margin-bottom: 1.2rem; }
-.samples-title { margin: 1.1rem 0 .4rem 0; font-weight: 600; font-size: .95rem; }
+.tagline { opacity: .88; font-size: 1.05rem; margin: .15rem 0 .9rem 0; }
+.intro { max-width: 46rem; opacity: .95; margin-bottom: 1.2rem; }
+[data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li { font-size: 1rem; }
+[data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p { font-size: .95rem; opacity: .85; }
+div[data-testid="stButton"] button p, div[data-testid="stDownloadButton"] button p { font-size: 1rem; }
+.samples-title { margin: 1.1rem 0 .4rem 0; font-weight: 600; font-size: 1.05rem; }
 .stTabs [data-baseweb="tab-list"] { gap: 1.4rem; border-bottom: 1px solid var(--line); }
-.stTabs [data-baseweb="tab"] { font-size: 1.02rem; font-weight: 600; padding-left: 0; padding-right: 0; }
+.stTabs [data-baseweb="tab"], .stTabs [data-baseweb="tab"] p { font-size: 1.0625rem; font-weight: 600; }
+.stTabs [data-baseweb="tab"] { padding-left: 0; padding-right: 0; }
 .stTabs [aria-selected="true"] { color: var(--accent); }
 .stTabs [data-baseweb="tab-highlight"] { background-color: var(--accent); }
 div[data-testid="stExpander"], div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 10px; }
