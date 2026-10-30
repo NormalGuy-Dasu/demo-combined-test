@@ -7,6 +7,7 @@ Thin wrapper only: it calls the project code unchanged. Both engines are loaded 
 runs at a time (one lock for both tabs), sizes and pages are limited, and nothing is kept (D-019): photos stay
 in memory, PDF pages go to a temporary folder that is deleted afterwards.
 """
+import base64
 import contextlib
 import dataclasses
 import gc
@@ -61,7 +62,7 @@ TEXT = {
         "run_mc": "Open the photo",
         "mc_note": "Pick the four corners of the page yourself, in any order. Useful when the automatic crop misses a corner.",
         "working_mc": "Opening the photo...",
-        "mc_hint": "Click the four corners of the page on the picture.",
+        "mc_hint": "Click the four corners of the page on the picture. Drag a point to move it.",
         "mc_count": "Corners chosen: {n}/4",
         "mc_undo": "Undo last corner",
         "mc_reset": "Start over",
@@ -163,7 +164,7 @@ TEXT = {
         "run_mc": "Mở ảnh",
         "mc_note": "Tự chọn bốn góc của trang giấy, theo thứ tự bất kỳ. Hữu ích khi cách cắt tự động bị lệch một góc.",
         "working_mc": "Đang mở ảnh...",
-        "mc_hint": "Bấm vào bốn góc của trang giấy trên ảnh.",
+        "mc_hint": "Bấm vào bốn góc của trang giấy trên ảnh. Kéo một điểm để dời nó.",
         "mc_count": "Đã chọn: {n}/4 góc",
         "mc_undo": "Bỏ góc vừa chọn",
         "mc_reset": "Làm lại",
@@ -539,8 +540,11 @@ def run_mc(data, eng):
     shown_im = img.copy()
     shown_im.thumbnail((MC_SHOW_MAX, MC_SHOW_MAX))
     n = st.session_state.get("mc_id", 0) + 1
-    st.session_state.update({"mc_id": n, "mc_pts": [], "mc_last_click": None, "mc_out": None})
-    out = {"data": data, "shown": shown_im, "full_size": img.size}
+    st.session_state.update({"mc_id": n, "mc_pts": [], "mc_out": None})
+    buf = io.BytesIO()
+    shown_im.save(buf, "JPEG", quality=88)
+    src = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    out = {"data": data, "shown": shown_im, "full_size": img.size, "src": src}
     del img
     release_memory()
     return out
@@ -740,21 +744,108 @@ def show_bg(r):
     tech_details(r)
 
 
+MC_CSS = "canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; border-radius: 6px; }"
+
+# Runs inside the page (Streamlit components v2, no iframe): draws the photo and the corners, a click adds a corner
+# and a drag moves one. The corners are sent to Python when the mouse or finger is released.
+MC_JS = """
+export default function (component) {
+  const { data, parentElement, setTriggerValue } = component;
+  const cv = parentElement.querySelector("canvas");
+  const W = data.w, H = data.h;
+  const pts = data.pts.map((p) => [p[0], p[1]]);
+  cv.width = W;
+  cv.height = H;
+  cv.style.maxWidth = W + "px";
+  const ctx = cv.getContext("2d");
+  const cache = (window.__mcImg = window.__mcImg || {});
+  let img = cache[data.id];
+  if (!img) {
+    img = new Image();
+    img.src = data.src;
+    cache[data.id] = img;
+  }
+  const draw = () => {
+    ctx.drawImage(img, 0, 0, W, H);
+    if (pts.length > 1) {
+      ctx.beginPath();
+      pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+      if (pts.length === 4) ctx.closePath();
+      ctx.strokeStyle = "rgb(0,200,0)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+    pts.forEach((p, i) => {
+      ctx.beginPath();
+      ctx.arc(p[0], p[1], 10, 0, 2 * Math.PI);
+      ctx.strokeStyle = "rgb(255,40,40)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.font = "bold 16px sans-serif";
+      ctx.fillStyle = "rgb(255,40,40)";
+      ctx.fillText(String(i + 1), p[0] + 13, p[1] - 9);
+    });
+  };
+  if (img.complete && img.naturalWidth) draw();
+  else img.addEventListener("load", draw);
+  const pos = (e) => {
+    const r = cv.getBoundingClientRect();
+    if (!r.width || !r.height) return [0, 0];
+    return [((e.clientX - r.left) * W) / r.width, ((e.clientY - r.top) * H) / r.height];
+  };
+  let drag = -1;
+  cv.onpointerdown = (e) => {
+    e.preventDefault();
+    if (!cv.getBoundingClientRect().width) return;
+    const [x, y] = pos(e);
+    const reach = (24 * W) / cv.getBoundingClientRect().width;
+    let best = -1, bestD = reach;
+    pts.forEach((p, i) => {
+      const d = Math.hypot(p[0] - x, p[1] - y);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    if (best < 0 && pts.length < 4) { pts.push([x, y]); best = pts.length - 1; }
+    if (best < 0) return;
+    drag = best;
+    try { cv.setPointerCapture(e.pointerId); } catch (err) {}
+    draw();
+  };
+  cv.onpointermove = (e) => {
+    if (drag < 0) return;
+    const [x, y] = pos(e);
+    pts[drag] = [Math.min(W, Math.max(0, x)), Math.min(H, Math.max(0, y))];
+    draw();
+  };
+  const end = () => {
+    if (drag < 0) return;
+    drag = -1;
+    setTriggerValue("edit", { pts: pts.map((p) => [p[0], p[1]]), t: Date.now() });
+  };
+  cv.onpointerup = end;
+  cv.onpointercancel = end;
+}
+"""
+
+
+@st.cache_resource
+def mc_component():
+    return st.components.v2.component("mc_corners", html="<canvas></canvas>", css=MC_CSS, js=MC_JS)
+
+
 def show_mc(r):
     if show_error(r):
         return
-    from PIL import ImageDraw
-    from streamlit_image_coordinates import streamlit_image_coordinates
 
     pts = st.session_state.setdefault("mc_pts", [])
     sh = r["shown"]
-    marked = sh.copy()
-    d = ImageDraw.Draw(marked)
-    if len(pts) > 1:
-        d.line(pts + ([pts[0]] if len(pts) == 4 else []), fill=(0, 200, 0), width=3)
-    for i, (x, y) in enumerate(pts):
-        d.ellipse([x - 9, y - 9, x + 9, y + 9], outline=(255, 40, 40), width=3)
-        d.text((x + 12, y - 12), str(i + 1), fill=(255, 40, 40))
+    cmp_key = f"mc_cmp_{st.session_state['mc_id']}"
+
+    def take_points():
+        v = st.session_state.get(cmp_key)
+        edit = (v.get("edit") if hasattr(v, "get") else getattr(v, "edit", None)) or {}
+        new = edit.get("pts") or []
+        st.session_state["mc_pts"] = [(float(x), float(y)) for x, y in new if x is not None and y is not None][:4]
+        st.session_state["mc_out"] = None
 
     st.caption(tr("mc_hint"))
     b1, b2, b3 = st.columns([1, 1, 3], vertical_alignment="center")
@@ -768,11 +859,11 @@ def show_mc(r):
         st.rerun()
     b3.markdown(f"**{tr('mc_count', n=len(pts))}**")
 
-    c = streamlit_image_coordinates(marked, key=f"mc_img_{st.session_state['mc_id']}")
-    if c and len(pts) < 4 and c.get("unix_time") != st.session_state.get("mc_last_click"):
-        st.session_state["mc_last_click"] = c.get("unix_time")
-        pts.append((c["x"] * sh.width / c["width"], c["y"] * sh.height / c["height"]))
-        st.rerun()
+    mc_component()(
+        key=cmp_key,
+        data={"src": r["src"], "id": st.session_state["mc_id"], "w": sh.width, "h": sh.height, "pts": [list(p) for p in pts]},
+        on_edit_change=take_points,
+    )
 
     if len(pts) == 4:
         if st.session_state.get("mc_out") is None:
