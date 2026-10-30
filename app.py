@@ -54,6 +54,17 @@ TEXT = {
         "pdf_intro": "Reads a scanned land-record PDF page by page, splits it into documents and pulls out the fields of each one.",
         "sub_crop": "Crop and straighten",
         "sub_qr": "QR code",
+        "sub_mc": "Manual corners",
+        "upload_mc": "Photo of a document (JPG or PNG, up to {mb} MB)",
+        "run_mc": "Open the photo",
+        "mc_note": "Pick the four corners of the page yourself, in any order. Useful when the automatic crop misses a corner.",
+        "working_mc": "Opening the photo...",
+        "mc_hint": "Click the four corners of the page on the picture.",
+        "mc_count": "Corners chosen: {n}/4",
+        "mc_undo": "Undo last corner",
+        "mc_reset": "Start over",
+        "mc_result": "Straightened with your corners",
+        "mc_bad": "These four points do not make a usable page. Undo a corner and click it again.",
         "sub_bg": "Remove background",
         "upload_bg": "Photo of a document (JPG or PNG, up to {mb} MB)",
         "run_bg": "Remove the background",
@@ -144,6 +155,17 @@ TEXT = {
         "pdf_intro": "Đọc từng trang của PDF hồ sơ đất đai đã scan, tách thành từng tài liệu và lấy ra các trường thông tin của mỗi tài liệu.",
         "sub_crop": "Cắt và làm thẳng",
         "sub_qr": "Mã QR",
+        "sub_mc": "Chỉnh 4 góc",
+        "upload_mc": "Ảnh chụp tài liệu (JPG hoặc PNG, tối đa {mb} MB)",
+        "run_mc": "Mở ảnh",
+        "mc_note": "Tự chọn bốn góc của trang giấy, theo thứ tự bất kỳ. Hữu ích khi cách cắt tự động bị lệch một góc.",
+        "working_mc": "Đang mở ảnh...",
+        "mc_hint": "Bấm vào bốn góc của trang giấy trên ảnh.",
+        "mc_count": "Đã chọn: {n}/4 góc",
+        "mc_undo": "Bỏ góc vừa chọn",
+        "mc_reset": "Làm lại",
+        "mc_result": "Đã làm thẳng theo các góc bạn chọn",
+        "mc_bad": "Bốn điểm này không tạo thành một trang giấy dùng được. Hãy bỏ một góc và bấm lại.",
         "sub_bg": "Tách nền",
         "upload_bg": "Ảnh chụp tài liệu (JPG hoặc PNG, tối đa {mb} MB)",
         "run_bg": "Tách nền",
@@ -501,6 +523,47 @@ def run_bg(data, eng):
     return out
 
 
+MC_SHOW_MAX = 760  # width/height limit of the picture the visitor clicks on
+
+
+def run_mc(data, eng):
+    err, size = check_image(data)
+    if err:
+        return err
+    from PIL import Image, ImageOps
+
+    img = ImageOps.exif_transpose(Image.open(io.BytesIO(data))).convert("RGB")
+    shown_im = img.copy()
+    shown_im.thumbnail((MC_SHOW_MAX, MC_SHOW_MAX))
+    n = st.session_state.get("mc_id", 0) + 1
+    st.session_state.update({"mc_id": n, "mc_pts": [], "mc_last_click": None, "mc_out": None})
+    out = {"data": data, "shown": shown_im, "full_size": img.size}
+    del img
+    release_memory()
+    return out
+
+
+def mc_straighten(r, pts):
+    """Corners are in the shown picture; scale them up and cut the full-size photo. Returns (jpeg bytes, jpeg preview) or None."""
+    import cv2
+    import numpy as np
+    from PIL import Image, ImageOps
+    from module_1_image_preprocessing._crop_deskew import _perspective_transform
+
+    sw = r["shown"].width
+    k = r["full_size"][0] / sw
+    corners = np.array([[x * k, y * k] for x, y in pts], dtype=np.float32)
+    img = cv2.cvtColor(np.array(ImageOps.exif_transpose(Image.open(io.BytesIO(r["data"]))).convert("RGB")), cv2.COLOR_RGB2BGR)
+    out = _perspective_transform(img, corners, 10)
+    del img
+    if min(out.shape[:2]) < 40:
+        return None
+    res = (to_jpeg(out, 100000, 92), to_jpeg(out))
+    del out
+    release_memory()
+    return res
+
+
 # ---------- Cluster 2: PDFs ----------
 
 def boxed_page(png_path, words, max_side=1000):
@@ -674,6 +737,52 @@ def show_bg(r):
     tech_details(r)
 
 
+def show_mc(r):
+    if show_error(r):
+        return
+    from PIL import ImageDraw
+    from streamlit_image_coordinates import streamlit_image_coordinates
+
+    pts = st.session_state.setdefault("mc_pts", [])
+    sh = r["shown"]
+    marked = sh.copy()
+    d = ImageDraw.Draw(marked)
+    if len(pts) > 1:
+        d.line(pts + ([pts[0]] if len(pts) == 4 else []), fill=(0, 200, 0), width=3)
+    for i, (x, y) in enumerate(pts):
+        d.ellipse([x - 9, y - 9, x + 9, y + 9], outline=(255, 40, 40), width=3)
+        d.text((x + 12, y - 12), str(i + 1), fill=(255, 40, 40))
+
+    st.caption(tr("mc_hint"))
+    b1, b2, b3 = st.columns([1, 1, 3], vertical_alignment="center")
+    if b1.button(tr("mc_undo"), disabled=not pts, key="mc_undo", width="stretch"):
+        pts.pop()
+        st.session_state["mc_out"] = None
+        st.rerun()
+    if b2.button(tr("mc_reset"), disabled=not pts, key="mc_reset", width="stretch"):
+        pts.clear()
+        st.session_state["mc_out"] = None
+        st.rerun()
+    b3.markdown(f"**{tr('mc_count', n=len(pts))}**")
+
+    c = streamlit_image_coordinates(marked, key=f"mc_img_{st.session_state['mc_id']}")
+    if c and len(pts) < 4 and c.get("unix_time") != st.session_state.get("mc_last_click"):
+        st.session_state["mc_last_click"] = c.get("unix_time")
+        pts.append((c["x"] * sh.width / c["width"], c["y"] * sh.height / c["height"]))
+        st.rerun()
+
+    if len(pts) == 4:
+        if st.session_state.get("mc_out") is None:
+            st.session_state["mc_out"] = mc_straighten(r, pts) or "bad"
+        out = st.session_state["mc_out"]
+        if out == "bad":
+            st.warning(tr("mc_bad"))
+        else:
+            st.caption(tr("mc_result"))
+            st.image(out[1], width="stretch")
+            st.download_button(tr("download_image"), out[0], file_name="manual_crop.jpg", mime="image/jpeg", key="dl_mc")
+
+
 def show_qr(r):
     if show_error(r):
         return
@@ -820,14 +929,14 @@ with head_l:
 st.markdown(f"<div class='intro'>{tr('intro')}<br><br>{tr('accuracy')}</div>", unsafe_allow_html=True)
 
 engine = load_engines()
-for key in ("crop", "qr", "bg", "pdf"):
+for key in ("crop", "qr", "bg", "mc", "pdf"):
     st.session_state.setdefault(key, None)
 
 tab_photo, tab_pdf = st.tabs([tr("tab_photo"), tr("tab_pdf")])
 
 with tab_photo:
     st.write(tr("photo_intro"))
-    sub_crop, sub_qr, sub_bg = st.tabs([tr("sub_crop"), tr("sub_qr"), tr("sub_bg")])
+    sub_crop, sub_qr, sub_bg, sub_mc = st.tabs([tr("sub_crop"), tr("sub_qr"), tr("sub_bg"), tr("sub_mc")])
     with sub_crop:
         input_block("crop", tr("upload_photo", mb=MAX_PHOTO_MB), PHOTO_SAMPLES, tr("run_crop"), MAX_PHOTO_MB, "photo",
                     lambda d: guarded(run_crop, "working_photo", d, engine))
@@ -845,6 +954,12 @@ with tab_photo:
                     lambda d: guarded(run_bg, "working_bg", d, engine))
         if st.session_state["bg"] is not None:
             show_bg(st.session_state["bg"])
+    with sub_mc:
+        st.caption(tr("mc_note"))
+        input_block("mc", tr("upload_mc", mb=MAX_PHOTO_MB), PHOTO_SAMPLES, tr("run_mc"), MAX_PHOTO_MB, "photo",
+                    lambda d: guarded(run_mc, "working_mc", d, engine))
+        if st.session_state["mc"] is not None:
+            show_mc(st.session_state["mc"])
 
 with tab_pdf:
     st.write(tr("pdf_intro"))
