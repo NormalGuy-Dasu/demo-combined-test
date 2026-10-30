@@ -749,7 +749,7 @@ def show_bg(r):
     tech_details(r)
 
 
-MC_CSS = "canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; border-radius: 6px; }"
+MC_CSS = "canvas { display: block; width: 100%; height: auto; touch-action: pan-y; cursor: crosshair; border-radius: 6px; }"
 
 # Runs inside the page (Streamlit components v2, no iframe): draws the photo and the corners, a click adds a corner
 # and a drag moves one. The corners are sent to Python when the mouse or finger is released.
@@ -805,35 +805,71 @@ export default function (component) {
     if (!r.width || !r.height) return [0, 0];
     return [((e.clientX - r.left) * W) / r.width, ((e.clientY - r.top) * H) / r.height];
   };
-  cv.onpointerdown = (e) => {
-    e.preventDefault();
-    if (!cv.getBoundingClientRect().width) return;
-    const [x, y] = pos(e);
-    const reach = (24 * W) / cv.getBoundingClientRect().width;
+  const nearest = (cx, cy) => {
+    const r = cv.getBoundingClientRect();
+    if (!r.width || !r.height) return -1;
+    const x = ((cx - r.left) * W) / r.width, y = ((cy - r.top) * H) / r.height;
+    const reach = (24 * W) / r.width;
     let best = -1, bestD = reach;
     pts.forEach((p, i) => {
       const d = Math.hypot(p[0] - x, p[1] - y);
       if (d < bestD) { bestD = d; best = i; }
     });
-    if (best < 0 && pts.length < 4) { pts.push([x, y]); best = pts.length - 1; }
-    if (best < 0) return;
-    S.drag = best;
+    return best;
+  };
+  const commit = () => setTriggerValue("edit", { pts: pts.map((p) => [p[0], p[1]]), t: Date.now() });
+  // A finger that lands on a corner moves it, so the page must not scroll then. A finger that lands anywhere else
+  // keeps the normal page scroll (touch-action: pan-y); it only adds a corner when it is lifted without having moved.
+  cv.addEventListener("touchstart", (e) => {
+    const t = e.touches[0];
+    if (t && nearest(t.clientX, t.clientY) >= 0) e.preventDefault();
+  }, { passive: false });
+  cv.addEventListener("touchmove", (e) => { if (S.drag >= 0) e.preventDefault(); }, { passive: false });
+  let tap = null;
+  cv.onpointerdown = (e) => {
+    if (!cv.getBoundingClientRect().width) return;
+    const best = nearest(e.clientX, e.clientY);
+    if (best < 0 && e.pointerType !== "mouse") {
+      tap = { x: e.clientX, y: e.clientY, t: Date.now() };
+      return;
+    }
+    e.preventDefault();
+    if (best < 0) {
+      if (pts.length >= 4) return;
+      const [x, y] = pos(e);
+      pts.push([x, y]);
+      S.drag = pts.length - 1;
+    } else {
+      S.drag = best;
+    }
     try { cv.setPointerCapture(e.pointerId); } catch (err) {}
     draw();
   };
   cv.onpointermove = (e) => {
+    if (tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > 10) tap = null;
     if (S.drag < 0) return;
     const [x, y] = pos(e);
     pts[S.drag] = [Math.min(W, Math.max(0, x)), Math.min(H, Math.max(0, y))];
     draw();
   };
-  const end = () => {
+  cv.onpointerup = (e) => {
+    if (tap) {
+      const ok = Date.now() - tap.t < 600 && pts.length < 4;
+      const [x, y] = pos(e);
+      tap = null;
+      if (ok) { pts.push([x, y]); draw(); commit(); }
+      return;
+    }
     if (S.drag < 0) return;
     S.drag = -1;
-    setTriggerValue("edit", { pts: pts.map((p) => [p[0], p[1]]), t: Date.now() });
+    commit();
   };
-  cv.onpointerup = end;
-  cv.onpointercancel = end;
+  cv.onpointercancel = () => {
+    tap = null;
+    if (S.drag < 0) return;
+    S.drag = -1;
+    commit();
+  };
 }
 """
 
