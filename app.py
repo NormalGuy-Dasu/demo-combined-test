@@ -11,6 +11,7 @@ import base64
 import contextlib
 import dataclasses
 import gc
+import hashlib
 import io
 import json
 import os
@@ -838,8 +839,13 @@ export default function (component) {
 
 
 @st.cache_resource
-def mc_component():
-    return st.components.v2.component("mc_corners", html="<canvas></canvas>", css=MC_CSS, js=MC_JS)
+def mc_component(version):
+    # the name carries a hash of the code: after a new deploy the server keeps its caches, and without this it would
+    # keep serving the old JavaScript to the page
+    return st.components.v2.component(f"mc_corners_{version}", html="<canvas></canvas>", css=MC_CSS, js=MC_JS)
+
+
+MC_VERSION = hashlib.md5((MC_JS + MC_CSS).encode()).hexdigest()[:10]
 
 
 def show_mc(r):
@@ -857,38 +863,39 @@ def show_mc(r):
         st.session_state["mc_pts"] = [(float(x), float(y)) for x, y in new if x is not None and y is not None][:4]
         st.session_state["mc_out"] = None
 
+    st.caption(tr("mc_hint"))
+    # the controls sit above both pictures, so the photo and the result start at the same height
+    b1, b2, b3, b4 = st.columns([1, 1, 1, 2], vertical_alignment="center")
+    if b1.button(tr("mc_undo"), disabled=not pts, key="mc_undo", width="stretch"):
+        pts.pop()
+        st.session_state["mc_out"] = None
+        st.session_state["mc_rev"] = st.session_state.get("mc_rev", 0) + 1
+        st.rerun()
+    if b2.button(tr("mc_reset"), disabled=not pts, key="mc_reset", width="stretch"):
+        pts.clear()
+        st.session_state["mc_out"] = None
+        st.session_state["mc_rev"] = st.session_state.get("mc_rev", 0) + 1
+        st.rerun()
+    if b3.button(tr("mc_crop"), type="primary", disabled=len(pts) != 4, key="mc_crop", width="stretch"):
+        with st.spinner(tr("working_mc")):
+            st.session_state["mc_out"] = mc_straighten(r, pts) or "bad"
+    b4.markdown(f"**{tr('mc_count', n=len(pts))}**")
+
     left, right = st.columns(2)
     with left:
-        st.caption(tr("mc_hint"))
-        b1, b2, b3 = st.columns(3, vertical_alignment="center")
-        if b1.button(tr("mc_undo"), disabled=not pts, key="mc_undo", width="stretch"):
-            pts.pop()
-            st.session_state["mc_out"] = None
-            st.session_state["mc_rev"] = st.session_state.get("mc_rev", 0) + 1
-            st.rerun()
-        if b2.button(tr("mc_reset"), disabled=not pts, key="mc_reset", width="stretch"):
-            pts.clear()
-            st.session_state["mc_out"] = None
-            st.session_state["mc_rev"] = st.session_state.get("mc_rev", 0) + 1
-            st.rerun()
-        if b3.button(tr("mc_crop"), type="primary", disabled=len(pts) != 4, key="mc_crop", width="stretch"):
-            with st.spinner(tr("working_mc")):
-                st.session_state["mc_out"] = mc_straighten(r, pts) or "bad"
-        st.markdown(f"**{tr('mc_count', n=len(pts))}**")
-        mc_component()(
+        mc_component(MC_VERSION)(
             key=cmp_key,
             data={"src": r["src"], "id": st.session_state["mc_id"], "rev": st.session_state.get("mc_rev", 0),
                   "w": sh.width, "h": sh.height, "pts": [list(p) for p in pts]},
             on_edit_change=take_points,
         )
-
     with right:
         out = st.session_state.get("mc_out")
         if out == "bad":
             st.warning(tr("mc_bad"))
         elif out:
-            st.caption(tr("mc_result"))
             st.image(out[1], width="stretch")
+            st.caption(tr("mc_result"))
             st.download_button(tr("download_image"), out[0], file_name="manual_crop.jpg", mime="image/jpeg", key="dl_mc")
         else:
             st.caption(tr("mc_wait"))
