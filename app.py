@@ -64,8 +64,10 @@ TEXT = {
         "working_mc": "Opening the photo...",
         "mc_hint": "Click the four corners of the page on the picture. Drag a point to move it.",
         "mc_count": "Corners chosen: {n}/4",
-        "mc_undo": "Undo last corner",
+        "mc_undo": "Undo corner",
         "mc_reset": "Start over",
+        "mc_crop": "Crop page",
+        "mc_wait": "Place the four corners, then press “Crop page”. The result appears here.",
         "mc_result": "Straightened with your corners",
         "mc_bad": "These four points do not make a usable page. Undo a corner and click it again.",
         "sub_bg": "Remove background",
@@ -166,8 +168,10 @@ TEXT = {
         "working_mc": "Đang mở ảnh...",
         "mc_hint": "Bấm vào bốn góc của trang giấy trên ảnh. Kéo một điểm để dời nó.",
         "mc_count": "Đã chọn: {n}/4 góc",
-        "mc_undo": "Bỏ góc vừa chọn",
+        "mc_undo": "Bỏ góc cuối",
         "mc_reset": "Làm lại",
+        "mc_crop": "Cắt ảnh",
+        "mc_wait": "Đặt đủ bốn góc rồi bấm “Cắt ảnh”. Kết quả sẽ hiện ở đây.",
         "mc_result": "Đã làm thẳng theo các góc bạn chọn",
         "mc_bad": "Bốn điểm này không tạo thành một trang giấy dùng được. Hãy bỏ một góc và bấm lại.",
         "sub_bg": "Tách nền",
@@ -753,7 +757,14 @@ export default function (component) {
   const { data, parentElement, setTriggerValue } = component;
   const cv = parentElement.querySelector("canvas");
   const W = data.w, H = data.h;
-  const pts = data.pts.map((p) => [p[0], p[1]]);
+  // The corners live here in the browser, so a page refresh that arrives while the visitor is dragging cannot move a
+  // point back. Python only replaces them when it changes them itself (Undo / Start over bump data.rev).
+  const all = (window.__mcState = window.__mcState || {});
+  let S = all[data.id];
+  if (!S || S.rev !== data.rev) {
+    S = all[data.id] = { pts: data.pts.map((p) => [p[0], p[1]]), rev: data.rev, drag: -1 };
+  }
+  const pts = S.pts;
   cv.width = W;
   cv.height = H;
   cv.style.maxWidth = W + "px";
@@ -793,7 +804,6 @@ export default function (component) {
     if (!r.width || !r.height) return [0, 0];
     return [((e.clientX - r.left) * W) / r.width, ((e.clientY - r.top) * H) / r.height];
   };
-  let drag = -1;
   cv.onpointerdown = (e) => {
     e.preventDefault();
     if (!cv.getBoundingClientRect().width) return;
@@ -806,19 +816,19 @@ export default function (component) {
     });
     if (best < 0 && pts.length < 4) { pts.push([x, y]); best = pts.length - 1; }
     if (best < 0) return;
-    drag = best;
+    S.drag = best;
     try { cv.setPointerCapture(e.pointerId); } catch (err) {}
     draw();
   };
   cv.onpointermove = (e) => {
-    if (drag < 0) return;
+    if (S.drag < 0) return;
     const [x, y] = pos(e);
-    pts[drag] = [Math.min(W, Math.max(0, x)), Math.min(H, Math.max(0, y))];
+    pts[S.drag] = [Math.min(W, Math.max(0, x)), Math.min(H, Math.max(0, y))];
     draw();
   };
   const end = () => {
-    if (drag < 0) return;
-    drag = -1;
+    if (S.drag < 0) return;
+    S.drag = -1;
     setTriggerValue("edit", { pts: pts.map((p) => [p[0], p[1]]), t: Date.now() });
   };
   cv.onpointerup = end;
@@ -847,34 +857,41 @@ def show_mc(r):
         st.session_state["mc_pts"] = [(float(x), float(y)) for x, y in new if x is not None and y is not None][:4]
         st.session_state["mc_out"] = None
 
-    st.caption(tr("mc_hint"))
-    b1, b2, b3 = st.columns([1, 1, 3], vertical_alignment="center")
-    if b1.button(tr("mc_undo"), disabled=not pts, key="mc_undo", width="stretch"):
-        pts.pop()
-        st.session_state["mc_out"] = None
-        st.rerun()
-    if b2.button(tr("mc_reset"), disabled=not pts, key="mc_reset", width="stretch"):
-        pts.clear()
-        st.session_state["mc_out"] = None
-        st.rerun()
-    b3.markdown(f"**{tr('mc_count', n=len(pts))}**")
+    left, right = st.columns(2)
+    with left:
+        st.caption(tr("mc_hint"))
+        b1, b2, b3 = st.columns(3, vertical_alignment="center")
+        if b1.button(tr("mc_undo"), disabled=not pts, key="mc_undo", width="stretch"):
+            pts.pop()
+            st.session_state["mc_out"] = None
+            st.session_state["mc_rev"] = st.session_state.get("mc_rev", 0) + 1
+            st.rerun()
+        if b2.button(tr("mc_reset"), disabled=not pts, key="mc_reset", width="stretch"):
+            pts.clear()
+            st.session_state["mc_out"] = None
+            st.session_state["mc_rev"] = st.session_state.get("mc_rev", 0) + 1
+            st.rerun()
+        if b3.button(tr("mc_crop"), type="primary", disabled=len(pts) != 4, key="mc_crop", width="stretch"):
+            with st.spinner(tr("working_mc")):
+                st.session_state["mc_out"] = mc_straighten(r, pts) or "bad"
+        st.markdown(f"**{tr('mc_count', n=len(pts))}**")
+        mc_component()(
+            key=cmp_key,
+            data={"src": r["src"], "id": st.session_state["mc_id"], "rev": st.session_state.get("mc_rev", 0),
+                  "w": sh.width, "h": sh.height, "pts": [list(p) for p in pts]},
+            on_edit_change=take_points,
+        )
 
-    mc_component()(
-        key=cmp_key,
-        data={"src": r["src"], "id": st.session_state["mc_id"], "w": sh.width, "h": sh.height, "pts": [list(p) for p in pts]},
-        on_edit_change=take_points,
-    )
-
-    if len(pts) == 4:
-        if st.session_state.get("mc_out") is None:
-            st.session_state["mc_out"] = mc_straighten(r, pts) or "bad"
-        out = st.session_state["mc_out"]
+    with right:
+        out = st.session_state.get("mc_out")
         if out == "bad":
             st.warning(tr("mc_bad"))
-        else:
+        elif out:
             st.caption(tr("mc_result"))
             st.image(out[1], width="stretch")
             st.download_button(tr("download_image"), out[0], file_name="manual_crop.jpg", mime="image/jpeg", key="dl_mc")
+        else:
+            st.caption(tr("mc_wait"))
 
 
 def show_qr(r):
