@@ -886,7 +886,10 @@ def input_block(prefix, upload_label, samples, run_label, max_mb, sample_kind, r
     if fold:
         opened = st.session_state.get(prefix) is not None
         # a different label makes Streamlit apply the new "expanded" value instead of keeping the old open state
-        box = st.expander(tr("samples_again" if opened else "samples"), expanded=not opened)
+        label = tr("samples_again" if opened else "samples")
+        if opened:
+            label += "​" * (st.session_state.get("mc_id", 0) % 2)  # new label after every photo, so it folds every time
+        box = st.expander(label, expanded=not opened)
     else:
         box = contextlib.nullcontext()
         st.markdown(f"<div class='samples-title'>{tr('samples')}</div>", unsafe_allow_html=True)
