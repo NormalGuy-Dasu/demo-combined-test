@@ -54,6 +54,13 @@ TEXT = {
         "pdf_intro": "Reads a scanned land-record PDF page by page, splits it into documents and pulls out the fields of each one.",
         "sub_crop": "Crop and straighten",
         "sub_qr": "QR code",
+        "sub_bg": "Remove background",
+        "upload_bg": "Photo of a document (JPG or PNG, up to {mb} MB)",
+        "run_bg": "Remove the background",
+        "bg_note": "Cuts the sheet out of the original photo and leaves the background transparent. The page is not straightened.",
+        "working_bg": "Removing the background...",
+        "bg_result": "Background removed",
+        "download_cutout": "Download the cut-out (PNG)",
         "upload_photo": "Photo of a document (JPG or PNG, up to {mb} MB)",
         "upload_qr": "Image with a QR code or barcode (JPG or PNG, up to {mb} MB)",
         "upload_pdf": "Scanned PDF (up to {pages} pages, {mb} MB)",
@@ -137,6 +144,13 @@ TEXT = {
         "pdf_intro": "Đọc từng trang của PDF hồ sơ đất đai đã scan, tách thành từng tài liệu và lấy ra các trường thông tin của mỗi tài liệu.",
         "sub_crop": "Cắt và làm thẳng",
         "sub_qr": "Mã QR",
+        "sub_bg": "Tách nền",
+        "upload_bg": "Ảnh chụp tài liệu (JPG hoặc PNG, tối đa {mb} MB)",
+        "run_bg": "Tách nền",
+        "bg_note": "Cắt tờ giấy ra khỏi ảnh gốc và để nền trong suốt. Trang giấy không được làm thẳng.",
+        "working_bg": "Đang tách nền...",
+        "bg_result": "Đã tách nền",
+        "download_cutout": "Tải ảnh đã tách nền (PNG)",
         "upload_photo": "Ảnh chụp tài liệu (JPG hoặc PNG, tối đa {mb} MB)",
         "upload_qr": "Ảnh có mã QR hoặc mã vạch (JPG hoặc PNG, tối đa {mb} MB)",
         "upload_pdf": "PDF đã scan (tối đa {pages} trang, {mb} MB)",
@@ -456,6 +470,37 @@ def run_qr(data, eng):
     return out
 
 
+def run_bg(data, eng):
+    t_all = time.perf_counter()
+    err, size = check_image(data)
+    if err:
+        return err
+    from PIL import Image, ImageOps
+    from rembg import remove
+    from module_1_image_preprocessing import _crop_deskew
+
+    img = ImageOps.exif_transpose(Image.open(io.BytesIO(data))).convert("RGB")
+    t = time.perf_counter()
+    cut = remove(img, session=_crop_deskew._ai_session)
+    t_rm = time.perf_counter() - t
+    full = io.BytesIO()
+    cut.save(full, "PNG", optimize=False)
+    shown_im = cut.copy()
+    shown_im.thumbnail((SHOW_MAX_SIDE, SHOW_MAX_SIDE))
+    small = io.BytesIO()
+    shown_im.save(small, "PNG")
+    out = {
+        "before": to_jpeg(decode_image(data)),
+        "cutout": small.getvalue(),
+        "cutout_full": full.getvalue(),
+        "total_s": round(time.perf_counter() - t_all, 1),
+        "stats": [("t_size", f"{size[0]} x {size[1]}"), ("t_time", round(t_rm, 2)), ("t_mem", rss_mb()), ("t_peak", peak_mb())],
+    }
+    del img, cut, shown_im
+    release_memory()
+    return out
+
+
 # ---------- Cluster 2: PDFs ----------
 
 def boxed_page(png_path, words, max_side=1000):
@@ -610,6 +655,25 @@ def show_crop(r):
     tech_details(r)
 
 
+def show_bg(r):
+    if show_error(r):
+        return
+    from PIL import Image
+
+    def aspect(data):
+        w, h = Image.open(io.BytesIO(data)).size
+        return min(max(w / h, 0.4), 2.5)
+
+    c1, c2 = st.columns([aspect(r["before"]), aspect(r["cutout"])])
+    c1.caption(tr("before"))
+    c1.image(r["before"], width="stretch")
+    c2.caption(tr("bg_result"))
+    c2.image(r["cutout"], width="stretch")
+    c2.download_button(tr("download_cutout"), r["cutout_full"], file_name="cutout.png", mime="image/png", key="dl_bg")
+    st.caption(tr("done_in", s=r["total_s"]))
+    tech_details(r)
+
+
 def show_qr(r):
     if show_error(r):
         return
@@ -756,14 +820,14 @@ with head_l:
 st.markdown(f"<div class='intro'>{tr('intro')}<br><br>{tr('accuracy')}</div>", unsafe_allow_html=True)
 
 engine = load_engines()
-for key in ("crop", "qr", "pdf"):
+for key in ("crop", "qr", "bg", "pdf"):
     st.session_state.setdefault(key, None)
 
 tab_photo, tab_pdf = st.tabs([tr("tab_photo"), tr("tab_pdf")])
 
 with tab_photo:
     st.write(tr("photo_intro"))
-    sub_crop, sub_qr = st.tabs([tr("sub_crop"), tr("sub_qr")])
+    sub_crop, sub_qr, sub_bg = st.tabs([tr("sub_crop"), tr("sub_qr"), tr("sub_bg")])
     with sub_crop:
         input_block("crop", tr("upload_photo", mb=MAX_PHOTO_MB), PHOTO_SAMPLES, tr("run_crop"), MAX_PHOTO_MB, "photo",
                     lambda d: guarded(run_crop, "working_photo", d, engine))
@@ -775,6 +839,12 @@ with tab_photo:
                     lambda d: guarded(run_qr, "working_qr", d, engine))
         if st.session_state["qr"] is not None:
             show_qr(st.session_state["qr"])
+    with sub_bg:
+        st.caption(tr("bg_note"))
+        input_block("bg", tr("upload_bg", mb=MAX_PHOTO_MB), PHOTO_SAMPLES, tr("run_bg"), MAX_PHOTO_MB, "photo",
+                    lambda d: guarded(run_bg, "working_bg", d, engine))
+        if st.session_state["bg"] is not None:
+            show_bg(st.session_state["bg"])
 
 with tab_pdf:
     st.write(tr("pdf_intro"))
