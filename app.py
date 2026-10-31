@@ -387,8 +387,8 @@ def pdf_gallery():
     cats = load_manifest()
     if not cats:
         return None
-    names = {c["id"]: c["name"][lang()] for c in cats}
-    # the language is part of the widget key so the names are redrawn when the language changes; the choice is kept in session_state
+    names = {c["id"]: c["name"]["Tiếng Việt"] for c in cats}  # category names stay Vietnamese in both languages
+    # the language is part of the widget key so the label is redrawn when the language changes; the choice is kept in session_state
     ids = list(names)
     chosen = st.session_state.get("pdf_cat_id", ids[0])
     cat_id = st.selectbox(tr("category"), ids, index=ids.index(chosen) if chosen in ids else 0,
@@ -1103,7 +1103,7 @@ div[data-testid="stButton"] > button, div[data-testid="stDownloadButton"] > butt
 [data-testid="stFileUploaderDropzoneInstructions"] span { display: none; }
 footer { visibility: hidden; }
 [data-test-script-state="running"] :is(button, a, input, textarea, summary, label, [role="tab"], [role="radio"], [role="combobox"], [data-testid="stFileUploaderDropzone"]) { pointer-events: none !important; }
-[data-test-script-state="running"] :is([role="tablist"], [data-testid="stSelectbox"], [data-testid="stPills"], [data-testid="stSegmentedControl"], [data-testid="stFileUploader"]) { opacity: .55; }
+[data-test-script-state="running"] :is([role="tablist"], [data-testid="stSelectbox"], [data-testid="stButtonGroup"], [data-testid="stFileUploader"]) { opacity: .55; }
 .brand-box { background: light-dark(#dcebfa, rgba(108,120,230,.08)); border-radius: 12px; padding: 1rem 1.3rem .8rem 1.3rem; margin-bottom: .2rem; }
 .brand-box .tagline { margin-bottom: 0; opacity: 1; font-weight: 600; }
 .stTabs [role="tab"], .stTabs [role="tab"] p { font-size: 1.0625rem; font-weight: 700; }
