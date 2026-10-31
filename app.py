@@ -1102,12 +1102,10 @@ div[data-testid="stVerticalBlock"] { gap: 1.1rem; }
 div[data-testid="stButton"] > button, div[data-testid="stDownloadButton"] > button { border-radius: 8px; }
 [data-testid="stFileUploaderDropzoneInstructions"] span { display: none; }
 footer { visibility: hidden; }
-@media (prefers-color-scheme: light) {
-  .brand-box { background: #dcebfa; border-radius: 12px; padding: 1rem 1.3rem .8rem 1.3rem; margin-bottom: .2rem; }
-  .brand-box .tagline { margin-bottom: 0; }
-  .stTabs [role="tablist"] { background: #e2e9fb; border-radius: 10px 10px 0 0; padding: 0 1.1rem; }
-  [role="tabpanel"] .stTabs [role="tablist"] { background: #edf1fc; }
-}
+.brand-box { background: light-dark(#dcebfa, transparent); border-radius: 12px; padding: 1rem 1.3rem .8rem 1.3rem; margin-bottom: .2rem; }
+.brand-box .tagline { margin-bottom: 0; }
+.stTabs [role="tablist"] { background: light-dark(#e2e9fb, transparent); border-radius: 10px 10px 0 0; padding: 0 1.1rem; }
+[role="tabpanel"] .stTabs [role="tablist"] { background: light-dark(#edf1fc, transparent); }
 </style>
 """
 
