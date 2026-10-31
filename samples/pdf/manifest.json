@@ -9,6 +9,18 @@
       "types": [
         {
           "name": "Giấy chứng nhận quyền sử dụng đất",
+          "file": "cert_land_use.pdf"
+        },
+        {
+          "name": "Giấy chứng nhận quyền sở hữu nhà ở",
+          "file": "cert_house_ownership.pdf"
+        },
+        {
+          "name": "Giấy chứng nhận quyền sở hữu nhà ở và quyền sử dụng đất ở",
+          "file": "cert_house_residential.pdf"
+        },
+        {
+          "name": "Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất",
           "file": "land_use_certificate.pdf"
         }
       ]
@@ -48,7 +60,27 @@
       "types": [
         {
           "name": "Hợp đồng chuyển nhượng quyền sử dụng đất",
+          "file": "contract_transfer_land.pdf"
+        },
+        {
+          "name": "Hợp đồng chuyển nhượng quyền sử dụng đất và tài sản gắn liền với đất",
           "file": "transfer_contract.pdf"
+        },
+        {
+          "name": "Hợp đồng chuyển nhượng quyền sử dụng đất và tài sản gắn liền với đất (Là nhà ở)",
+          "file": "contract_transfer_land_house.pdf"
+        },
+        {
+          "name": "Hợp đồng chuyển nhượng quyền sở hữu nhà ở và quyền sử dụng đất ở",
+          "file": "contract_transfer_house_residential.pdf"
+        },
+        {
+          "name": "Bản hợp đồng mua bán đất",
+          "file": "contract_land_sale.pdf"
+        },
+        {
+          "name": "Hợp đồng ủy quyền",
+          "file": "contract_power_of_attorney.pdf"
         }
       ]
     },
