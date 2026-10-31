@@ -1102,6 +1102,12 @@ div[data-testid="stVerticalBlock"] { gap: 1.1rem; }
 div[data-testid="stButton"] > button, div[data-testid="stDownloadButton"] > button { border-radius: 8px; }
 [data-testid="stFileUploaderDropzoneInstructions"] span { display: none; }
 footer { visibility: hidden; }
+@media (prefers-color-scheme: light) {
+  .brand-box { background: #dcebfa; border-radius: 12px; padding: 1rem 1.3rem .8rem 1.3rem; margin-bottom: .2rem; }
+  .brand-box .tagline { margin-bottom: 0; }
+  .stTabs [role="tablist"] { background: #e2e9fb; border-radius: 10px 10px 0 0; padding: 0 1.1rem; }
+  [role="tabpanel"] .stTabs [role="tablist"] { background: #edf1fc; }
+}
 </style>
 """
 
@@ -1112,8 +1118,8 @@ head_l, head_r = st.columns([4, 1.4], vertical_alignment="center")
 with head_r:
     st.segmented_control("Language", ["English", "Tiếng Việt"], default="English", key="lang_choice", label_visibility="collapsed")
 with head_l:
-    st.markdown("<div class='brand'>VN-Digitize <span>AI Engine</span></div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='tagline'>{tr('tagline')}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='brand-box'><div class='brand'>VN-Digitize <span>AI Engine</span></div>"
+                f"<div class='tagline'>{tr('tagline')}</div></div>", unsafe_allow_html=True)
 st.markdown(f"<div class='intro'>{tr('intro')}<br><br>{tr('accuracy')}</div>", unsafe_allow_html=True)
 
 engine = load_engines()
