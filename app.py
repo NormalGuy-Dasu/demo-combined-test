@@ -1102,6 +1102,8 @@ div[data-testid="stVerticalBlock"] { gap: 1.1rem; }
 div[data-testid="stButton"] > button, div[data-testid="stDownloadButton"] > button { border-radius: 8px; }
 [data-testid="stFileUploaderDropzoneInstructions"] span { display: none; }
 footer { visibility: hidden; }
+[data-test-script-state="running"] :is(button, a, input, textarea, summary, label, [role="tab"], [role="radio"], [role="combobox"], [data-testid="stFileUploaderDropzone"]) { pointer-events: none !important; }
+[data-test-script-state="running"] :is([role="tablist"], [data-testid="stSelectbox"], [data-testid="stPills"], [data-testid="stSegmentedControl"], [data-testid="stFileUploader"]) { opacity: .55; }
 .brand-box { background: light-dark(#dcebfa, rgba(108,120,230,.08)); border-radius: 12px; padding: 1rem 1.3rem .8rem 1.3rem; margin-bottom: .2rem; }
 .brand-box .tagline { margin-bottom: 0; opacity: 1; font-weight: 600; }
 .stTabs [role="tab"], .stTabs [role="tab"] p { font-size: 1.0625rem; font-weight: 700; }
