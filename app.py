@@ -1102,10 +1102,11 @@ div[data-testid="stVerticalBlock"] { gap: 1.1rem; }
 div[data-testid="stButton"] > button, div[data-testid="stDownloadButton"] > button { border-radius: 8px; }
 [data-testid="stFileUploaderDropzoneInstructions"] span { display: none; }
 footer { visibility: hidden; }
-.brand-box { background: light-dark(#dcebfa, transparent); border-radius: 12px; padding: 1rem 1.3rem .8rem 1.3rem; margin-bottom: .2rem; }
-.brand-box .tagline { margin-bottom: 0; }
-.stTabs [role="tablist"] { background: light-dark(#e2e9fb, transparent); border-radius: 10px 10px 0 0; padding: 0 1.1rem; }
-[role="tabpanel"] .stTabs [role="tablist"] { background: light-dark(#edf1fc, transparent); }
+.brand-box { background: light-dark(#dcebfa, rgba(108,120,230,.08)); border-radius: 12px; padding: 1rem 1.3rem .8rem 1.3rem; margin-bottom: .2rem; }
+.brand-box .tagline { margin-bottom: 0; opacity: 1; font-weight: 600; }
+.stTabs [role="tab"], .stTabs [role="tab"] p { font-size: 1.0625rem; font-weight: 700; }
+.stTabs [role="tablist"] { background: light-dark(#e2e9fb, rgba(108,120,230,.08)); border-radius: 10px 10px 0 0; padding: 0 1.1rem; }
+[role="tabpanel"] .stTabs [role="tablist"] { background: light-dark(#edf1fc, rgba(108,120,230,.08)); }
 </style>
 """
 
