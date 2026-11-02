@@ -35,6 +35,14 @@
         {
           "name": "Biên bản xét duyệt của hội đồng tư vấn đất đai",
           "file": "council_review_minutes.pdf"
+        },
+        {
+          "name": "Biên bản về việc bàn biện pháp giải quyết khiếu nại",
+          "file": "minutes_complaint.pdf"
+        },
+        {
+          "name": "Biên bản thẩm tra, đo đạc xác định ranh giới, diện tích",
+          "file": "minutes_survey_check.pdf"
         }
       ]
     },
@@ -48,6 +56,10 @@
         {
           "name": "Quyết định về việc cấp giấy chứng nhận",
           "file": "decision_issue_certificate.pdf"
+        },
+        {
+          "name": "Quyết định về việc giao đất nông nghiệp",
+          "file": "decision_agri_land.pdf"
         }
       ]
     },
@@ -94,6 +106,14 @@
         {
           "name": "Thông báo nộp lệ phí trước bạ nhà đất",
           "file": "registration_fee_notice.pdf"
+        },
+        {
+          "name": "Thông báo miễn thuế thu nhập cá nhân",
+          "file": "notice_pit_exempt.pdf"
+        },
+        {
+          "name": "Thông báo nộp thuế thu nhập cá nhân",
+          "file": "notice_pit_payment.pdf"
         }
       ]
     },
@@ -107,6 +127,10 @@
         {
           "name": "Danh sách công khai cấp giấy chứng nhận",
           "file": "public_list.pdf"
+        },
+        {
+          "name": "Danh sách chỉnh lý biến động",
+          "file": "list_change_records.pdf"
         }
       ]
     },
@@ -120,6 +144,14 @@
         {
           "name": "Phiếu kiểm soát quy trình cấp giấy chứng nhận",
           "file": "control_sheet.pdf"
+        },
+        {
+          "name": "Phiếu kiểm soát hồ sơ đăng ký thừa kế QSDĐ, QSHTS gắn liền với đất",
+          "file": "control_inheritance.pdf"
+        },
+        {
+          "name": "Phiếu kiểm soát quá trình giải quyết hồ sơ",
+          "file": "control_file_handling.pdf"
         }
       ]
     },
@@ -133,6 +165,18 @@
         {
           "name": "Trích lục bản đồ địa chính khu đất",
           "file": "cadastral_extract.pdf"
+        },
+        {
+          "name": "Bản đồ địa chính khu đất",
+          "file": "map_cadastral_plot.pdf"
+        },
+        {
+          "name": "Mẫu trích lục bản đồ địa chính",
+          "file": "map_extract_form.pdf"
+        },
+        {
+          "name": "Trích đo bản đồ địa chính khu đất",
+          "file": "map_survey_extract.pdf"
         }
       ]
     },
