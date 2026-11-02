@@ -399,6 +399,7 @@ def pdf_gallery():
     labels = {i: shown(t["name"]) for i, t in enumerate(types)}  # one button per document type, even when there is just one
     k = st.pills(tr("doc_type"), list(labels), format_func=labels.get, default=0, key=f"pdf_type_{cat_id}_{lang()}")
     k = 0 if k is None else k
+    st.session_state["pdf_sel"] = (cat_id, k)  # the PDF result is shown only while this same category and type stay selected
     typ = types[k]
     pages = pdf_pages(str(typ["path"]))
     with st.container(border=True, key="frame_sample"):
@@ -1066,6 +1067,8 @@ def input_block(prefix, upload_label, samples, run_label, max_mb, sample_kind, r
         res = runner(data)
         if res is not None:
             st.session_state[prefix] = res
+            if prefix == "pdf":
+                st.session_state["pdf_tag"] = st.session_state.get("pdf_sel")
             if fold:
                 st.rerun()
 
@@ -1127,7 +1130,18 @@ engine = load_engines()
 for key in ("crop", "qr", "bg", "mc", "pdf"):
     st.session_state.setdefault(key, None)
 
-tab_photo, tab_pdf = st.tabs([tr("tab_photo"), tr("tab_pdf")])
+MAIN_TABS = [tr("tab_photo"), tr("tab_pdf")]
+MAIN_KEY = f"main_tab_{lang()}"  # the labels change with the language, so the widget does too
+
+
+def main_tab_changed():
+    """Switching the main tab drops the PDF result; the chosen index survives a language change."""
+    st.session_state["main_idx"] = MAIN_TABS.index(st.session_state[MAIN_KEY])
+    st.session_state["pdf"] = None
+
+
+tab_photo, tab_pdf = st.tabs(MAIN_TABS, default=MAIN_TABS[st.session_state.get("main_idx", 0)],
+                             key=MAIN_KEY, on_change=main_tab_changed)
 
 with tab_photo:
     st.write(tr("photo_intro"))
@@ -1160,6 +1174,8 @@ with tab_pdf:
     st.write(tr("pdf_intro"))
     input_block("pdf", tr("upload_pdf", pages=MAX_PAGES, mb=MAX_PDF_MB), None, tr("run_pdf"), MAX_PDF_MB, "pdf",
                 lambda d: guarded_pdf(d, engine))
+    if st.session_state["pdf"] is not None and st.session_state.get("pdf_tag") != st.session_state.get("pdf_sel"):
+        st.session_state["pdf"] = None  # another category or type was picked
     if st.session_state["pdf"] is not None:
         show_pdf(st.session_state["pdf"])
 
