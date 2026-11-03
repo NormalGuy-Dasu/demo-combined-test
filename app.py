@@ -84,6 +84,8 @@ TEXT = {
         "samples": "Or try a sample",
         "sample_n": "Sample {n}",
         "category": "Category",
+        "pick_category": "Select a category to browse its samples",
+        "pick_type": "Select a document type to preview its sample.",
         "doc_type": "Document type",
         "pages_count": "{n} page(s)",
         "use_sample": "Use this sample",
@@ -188,6 +190,8 @@ TEXT = {
         "samples": "Hoặc thử một mẫu",
         "sample_n": "Mẫu {n}",
         "category": "Nhóm",
+        "pick_category": "Chọn một nhóm để xem các mẫu",
+        "pick_type": "Chọn một loại tài liệu để xem mẫu.",
         "doc_type": "Loại tài liệu",
         "pages_count": "{n} trang",
         "use_sample": "Dùng mẫu này",
@@ -390,16 +394,22 @@ def pdf_gallery():
     names = {c["id"]: c["name"]["Tiếng Việt"] for c in cats}  # category names stay Vietnamese in both languages
     # the language is part of the widget key so the label is redrawn when the language changes; the choice is kept in session_state
     ids = list(names)
-    chosen = st.session_state.get("pdf_cat_id", ids[0])
-    cat_id = st.selectbox(tr("category"), ids, index=ids.index(chosen) if chosen in ids else 0,
-                          format_func=names.get, key=f"pdf_category_{lang()}")
+    chosen = st.session_state.get("pdf_cat_id")
+    cat_id = st.selectbox(tr("category"), ids, index=ids.index(chosen) if chosen in ids else None,
+                          placeholder=tr("pick_category"), format_func=names.get, key=f"pdf_category_{lang()}")
     st.session_state["pdf_cat_id"] = cat_id
+    k = None
+    st.session_state["pdf_sel"] = (cat_id, k)  # the PDF result is shown only while this same category and type stay selected
+    if cat_id is None:
+        return None  # nothing is chosen yet: no type buttons, no sample
     cat = next(c for c in cats if c["id"] == cat_id)
     types = cat["types"]
     labels = {i: shown(t["name"]) for i, t in enumerate(types)}  # one button per document type, even when there is just one
-    k = st.pills(tr("doc_type"), list(labels), format_func=labels.get, default=0, key=f"pdf_type_{cat_id}_{lang()}")
-    k = 0 if k is None else k
-    st.session_state["pdf_sel"] = (cat_id, k)  # the PDF result is shown only while this same category and type stay selected
+    k = st.pills(tr("doc_type"), list(labels), format_func=labels.get, default=None, key=f"pdf_type_{cat_id}_{lang()}")
+    st.session_state["pdf_sel"] = (cat_id, k)
+    if k is None:
+        st.caption(tr("pick_type"))
+        return None
     typ = types[k]
     pages = pdf_pages(str(typ["path"]))
     with st.container(border=True, key="frame_sample"):
