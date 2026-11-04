@@ -181,6 +181,99 @@
       ]
     },
     {
+      "id": "applications",
+      "name": {
+        "English": "Applications",
+        "Tiếng Việt": "Đơn từ"
+      },
+      "types": [
+        {
+          "name": "Đơn đề nghị đăng ký biến động về quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất",
+          "file": "don_de_nghi_bien_dong.pdf"
+        },
+        {
+          "name": "Đơn đề nghị cấp giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất",
+          "file": "don_de_nghi_cap_gcn.pdf"
+        },
+        {
+          "name": "Đơn xin chuyển nhượng quyền sử dụng ruộng đất",
+          "file": "don_xin_chuyen_nhuong_quyen_sdd.pdf"
+        }
+      ]
+    },
+    {
+      "id": "statements",
+      "name": {
+        "English": "Statements and agreements",
+        "Tiếng Việt": "Văn bản"
+      },
+      "types": [
+        {
+          "name": "Văn bản cam kết về tài sản",
+          "file": "van_ban_cam_ket_tai_san.pdf"
+        },
+        {
+          "name": "Văn bản khai nhận tài sản thừa kế theo di chúc",
+          "file": "van_ban_khai_nhan_tai_san_thua_ke_theo_di_chuc.pdf"
+        },
+        {
+          "name": "Văn bản thỏa thuận phân chia tài sản thừa kế",
+          "file": "van_ban_thoa_thuan_phan_chia_di_san.pdf"
+        }
+      ]
+    },
+    {
+      "id": "receipts",
+      "name": {
+        "English": "Receipts",
+        "Tiếng Việt": "Biên lai"
+      },
+      "types": [
+        {
+          "name": "Biên lai thu lệ phí trước bạ",
+          "file": "bien_lai_thu_le_phi_truoc_ba.pdf"
+        },
+        {
+          "name": "Biên lai thuế thu nhập cá nhân",
+          "file": "bien_lai_thue_thu_nhap_ca_nhan.pdf"
+        }
+      ]
+    },
+    {
+      "id": "transfer_papers",
+      "name": {
+        "English": "Transfer papers",
+        "Tiếng Việt": "Giấy chuyển nhượng"
+      },
+      "types": [
+        {
+          "name": "Giấy chuyển nhượng đất",
+          "file": "giay_chuyen_nhuong_dat.pdf"
+        },
+        {
+          "name": "Giấy chuyển nhượng quyền sử dụng đất",
+          "file": "giay_chuyen_nhuong_quyen_sd_dat.pdf"
+        }
+      ]
+    },
+    {
+      "id": "tax_sections",
+      "name": {
+        "English": "Tax office sections",
+        "Tiếng Việt": "Phần tính giá trị"
+      },
+      "types": [
+        {
+          "name": "Phần tính lệ phí trước bạ của cơ quan thuế",
+          "file": "phan_tinh_le_phi_truoc_ba.pdf"
+        },
+        {
+          "name": "Phần xác định giá trị bất động sản và tính thuế của cơ quan thuế",
+          "file": "phan_xac_dinh_gia_tri_bat_dong_san.pdf"
+        }
+      ]
+    },
+    {
       "id": "multi",
       "name": {
         "English": "Several documents in one file",
