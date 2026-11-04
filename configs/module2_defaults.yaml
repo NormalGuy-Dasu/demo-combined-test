@@ -4,7 +4,7 @@ engine:
   lang: "vi"
 
 paddle:
-  det_limit_side_len: 2560
+  det_limit_side_len: 1920
   det_db_thresh: 0.3
   det_db_box_thresh: 0.5
 
