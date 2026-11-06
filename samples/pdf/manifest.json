@@ -274,6 +274,96 @@
       ]
     },
     {
+      "id": "civil_status",
+      "name": {
+        "English": "Civil status papers",
+        "Tiếng Việt": "Giấy tờ hộ tịch"
+      },
+      "types": [
+        {
+          "name": "Giấy chứng tử (Bản sao)",
+          "file": "giay_chung_tu.pdf"
+        },
+        {
+          "name": "Giấy xác nhận tình trạng hôn nhân",
+          "file": "giay_xac_nhan_tinh_trang_hon_nhan.pdf"
+        }
+      ]
+    },
+    {
+      "id": "tax_declarations",
+      "name": {
+        "English": "Tax declarations",
+        "Tiếng Việt": "Tờ khai"
+      },
+      "types": [
+        {
+          "name": "Tờ khai lệ phí trước bạ nhà, đất",
+          "file": "to_khai_le_phi_truoc_ba.pdf"
+        },
+        {
+          "name": "Tờ khai thuế sử dụng đất phi nông nghiệp",
+          "file": "to_khai_thue_su_dung_dat_phi_nong_nghiep.pdf"
+        }
+      ]
+    },
+    {
+      "id": "payment_slips",
+      "name": {
+        "English": "Payment slips",
+        "Tiếng Việt": "Giấy nộp tiền"
+      },
+      "types": [
+        {
+          "name": "Giấy nộp tiền vào ngân sách nhà nước",
+          "file": "giay_nop_tien_vao_ngan_sach_nha_nuoc.pdf"
+        }
+      ]
+    },
+    {
+      "id": "notary",
+      "name": {
+        "English": "Notary",
+        "Tiếng Việt": "Công chứng"
+      },
+      "types": [
+        {
+          "name": "Lời chứng của công chứng viên",
+          "file": "loi_chung_cua_cong_chung_vien.pdf"
+        }
+      ]
+    },
+    {
+      "id": "slips",
+      "name": {
+        "English": "Forms and review slips",
+        "Tiếng Việt": "Phiếu"
+      },
+      "types": [
+        {
+          "name": "Phiếu chuyển thông tin để xác định nghĩa vụ tài chính về đất đai",
+          "file": "phieu_chuyen_thong_tin_xac_dinh_nghia_vu_tai_chinh_dd.pdf"
+        },
+        {
+          "name": "Phiếu thẩm định hồ sơ",
+          "file": "phieu_tham_dinh_ho_so.pdf"
+        }
+      ]
+    },
+    {
+      "id": "proposals",
+      "name": {
+        "English": "Proposals",
+        "Tiếng Việt": "Tờ trình"
+      },
+      "types": [
+        {
+          "name": "Tờ trình về việc cấp giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất",
+          "file": "to_trinh_ve_viec_cap_gcn_qsd_dat.pdf"
+        }
+      ]
+    },
+    {
       "id": "multi",
       "name": {
         "English": "Several documents in one file",

@@ -1,6 +1,7 @@
 {
     "document_type": "loi_chung_cua_cong_chung_vien",
     "document_name": "Lời chứng của công chứng viên",
+    "force_restart_on_same_trigger": true,
     "start_triggers": [
         "LỜI CHỨNG CỦA CÔNG CHỨNG VIÊN",
         "Chứng nhân"

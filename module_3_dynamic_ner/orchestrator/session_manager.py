@@ -73,18 +73,26 @@ class SessionManager:
             if self.active_session:
                 if matched_plugin:
                     is_single = matched_plugin.get('is_single_page', False)
-                    # [UPGRADE]: Bổ sung cờ ép cắt phiên cho tài liệu cùng loại
                     force_restart = matched_plugin.get('force_restart_on_same_trigger', False)
                     
-                    # Nếu Tầng 2 xác nhận có tài liệu mới -> Auto-Flush phiên cũ ngay lập tức khi:
-                    # 1. Khác loại tài liệu (!=)
-                    # 2. Hoặc là tài liệu 1 trang (is_single)
-                    # 3. Hoặc cùng loại nhưng có cờ ép buộc (force_restart)
-                    if (self.active_session.document_type != matched_plugin.get('document_type')) or is_single or force_restart:
-                        log_xray(f"[DEBUG_ROUTER] PHÁT HIỆN TÀI LIỆU MỚI -> AUTO-FLUSH PHIÊN CŨ.")
+                    # Tình huống 1: Khác loại tài liệu -> CHẮC CHẮN ĐỔI PHIÊN
+                    if self.active_session.document_type != matched_plugin.get('document_type'):
+                        log_xray(f"[DEBUG_ROUTER] PHÁT HIỆN TÀI LIỆU LOẠI KHÁC -> AUTO-FLUSH PHIÊN CŨ.")
                         self._close_active_session(page_num - 1)
+                        
+                    # Tình huống 2: Cùng loại tài liệu
+                    else:
+                        # Tài liệu cùng loại nhưng được khai báo là "luôn chỉ có 1 trang" (Vd: Sổ đỏ 1 mặt)
+                        if is_single:
+                            log_xray(f"[DEBUG_ROUTER] TÀI LIỆU SINGLE_PAGE CÙNG LOẠI -> AUTO-FLUSH PHIÊN CŨ.")
+                            self._close_active_session(page_num - 1)
+                        # Tài liệu có nhiều trang, nhưng Tầng 2 lại vấp phải START_TRIGGER ở một trang mới
+                        # (Ví dụ Lời chứng 1 trang, trang sau lại là Lời chứng khác)
+                        elif force_restart:
+                             log_xray(f"[DEBUG_ROUTER] KÍCH HOẠT FORCE RESTART CÙNG LOẠI -> AUTO-FLUSH PHIÊN CŨ.")
+                             self._close_active_session(page_num - 1)
+                             
                 elif folder_name != "UNKNOWN" and self.active_session_folder != folder_name:
-                    # Tầng 1 báo đổi folder nhưng Tầng 2 không thấy trigger -> Báo động giả
                     log_xray(f"[DEBUG_ROUTER] BÁO ĐỘNG GIẢ TỪ TẦNG 1 (Không có start_trigger) -> Ép về UNKNOWN kế thừa.")
                     folder_name = "UNKNOWN"
 

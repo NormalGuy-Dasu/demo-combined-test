@@ -28,7 +28,16 @@
                 "NGƯỜI NỘP THUẾ hoặc",
                 "NHÂN VIÊN ĐẠI LÝ THUẾ"
             ],
-            "look_up_lines": 3
+            "scan_limit": 10,
+            "scan_direction": "bottom_up",
+            "look_up_lines": 3,
+            "context_direction": "above",
+            "date_format_mode": "text_only",
+            "post_processing": [
+                "fix_ocr_date_typos",
+                "clean_targeted_punctuation",
+                "format_date_vi"
+            ]
         },
         {
             "field_name": "ten_loai_tai_lieu",

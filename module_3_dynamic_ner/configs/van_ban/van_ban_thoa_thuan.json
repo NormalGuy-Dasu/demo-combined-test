@@ -3,7 +3,7 @@
     "document_name": "Văn bản thỏa thuận phân chia tài sản thừa kế",
     
     "start_triggers": [
-        "VĂN BẢN THOẢ THUẬN PHÂN CHIA"
+        "THOẢ THUẬN PHÂN CHIA"
     ],
     "start_threshold": 85,
     
@@ -31,8 +31,9 @@
         },
         {
             "field_name": "tac_gia",
-            "extraction_method": "fixed_value",
-            "value": ""
+            "extraction_method": "global_regex",
+            "pattern": "(?i)D[iìíịỉĩ]\\s*s.n\\s*c.a\\s*(?:ông|bà|ong|ba)\\s+([^)\\n\\.,;]+)",
+            "data_type": "string"
         }
     ]
 }
