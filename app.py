@@ -152,7 +152,7 @@ TEXT = {
         "limits_h": "Limits",
         "limits": "Photos: JPG or PNG, up to {photo_mb} MB and {mp} megapixels.\n\nPDFs: up to {pages} pages and {pdf_mb} MB, about 12 seconds per page.\n\nOne visitor is served at a time. After a long idle time the app needs about a minute to wake up.",
         "credits_h": "Credits",
-        "credits": "Page finding and clean-up: OpenCV, U²-Net-P through rembg. QR codes: ZBar through pyzbar. Text detection: PaddleOCR. Vietnamese text recognition: VietOCR. PDF pages: PyMuPDF. Interface: Streamlit.\n\nSample photos come from the WarpDoc dataset (CVPR 2022). The QR images come from web receipts. A file is removed on request.",
+        "credits": "Page finding and clean-up: OpenCV, U²-Net-P through rembg. QR codes: ZBar through pyzbar. Text detection: PaddleOCR. Vietnamese text recognition: VietOCR. PDF pages: PyMuPDF. Interface: Streamlit.\n\nSample photos come from the WarpDoc dataset (CVPR 2022); the blank-page photos are WarpDoc photos edited into blank pages. The QR images come from web receipts. A file is removed on request.",
         "col_field": "Field",
     },
     "Tiếng Việt": {
@@ -258,7 +258,7 @@ TEXT = {
         "limits_h": "Giới hạn",
         "limits": "Ảnh: JPG hoặc PNG, tối đa {photo_mb} MB và {mp} megapixel.\n\nPDF: tối đa {pages} trang và {pdf_mb} MB, khoảng 12 giây mỗi trang.\n\nMỗi lần chỉ phục vụ một người. Sau thời gian dài không ai dùng, ứng dụng cần khoảng một phút để thức dậy.",
         "credits_h": "Ghi công",
-        "credits": "Tìm tờ giấy và làm sạch ảnh: OpenCV, U²-Net-P qua rembg. Mã QR: ZBar qua pyzbar. Phát hiện chữ: PaddleOCR. Nhận dạng chữ tiếng Việt: VietOCR. Trang PDF: PyMuPDF. Giao diện: Streamlit.\n\nẢnh chụp mẫu lấy từ bộ dữ liệu WarpDoc (CVPR 2022). Ảnh QR lấy từ biên lai trên mạng. File sẽ được gỡ khi có yêu cầu.",
+        "credits": "Tìm tờ giấy và làm sạch ảnh: OpenCV, U²-Net-P qua rembg. Mã QR: ZBar qua pyzbar. Phát hiện chữ: PaddleOCR. Nhận dạng chữ tiếng Việt: VietOCR. Trang PDF: PyMuPDF. Giao diện: Streamlit.\n\nẢnh chụp mẫu lấy từ bộ dữ liệu WarpDoc (CVPR 2022); các ảnh trang trắng là ảnh WarpDoc được chỉnh thành trang trắng. Ảnh QR lấy từ biên lai trên mạng. File sẽ được gỡ khi có yêu cầu.",
         "col_field": "Trường",
     },
 }
