@@ -1,0 +1,24 @@
+{
+  "categories": [
+    {
+      "id": "curved",
+      "name": {"English": "Curved", "Tiếng Việt": "Giấy cong"},
+      "files": ["photo_2.jpg", "curved/curved_01.jpg", "curved/curved_02.jpg", "curved/curved_03.jpg", "curved/curved_04.jpg", "curved/curved_05.jpg", "curved/curved_06.jpg", "curved/curved_07.jpg", "curved/curved_08.jpg", "curved/curved_09.jpg", "curved/curved_10.jpg", "curved/curved_11.jpg"]
+    },
+    {
+      "id": "fold",
+      "name": {"English": "Folded", "Tiếng Việt": "Giấy gấp"},
+      "files": ["fold/fold_01.jpg", "fold/fold_02.jpg", "fold/fold_03.jpg", "fold/fold_04.jpg", "fold/fold_05.jpg", "fold/fold_06.jpg", "fold/fold_07.jpg", "fold/fold_08.jpg", "fold/fold_09.jpg", "fold/fold_10.jpg", "fold/fold_11.jpg", "fold/fold_12.jpg"]
+    },
+    {
+      "id": "tilted",
+      "name": {"English": "Tilted view", "Tiếng Việt": "Chụp nghiêng"},
+      "files": ["photo_1.jpg", "photo_3.jpg", "perspective/tilted_01.jpg", "perspective/tilted_02.jpg", "perspective/tilted_03.jpg", "perspective/tilted_04.jpg", "perspective/tilted_05.jpg", "perspective/tilted_06.jpg", "perspective/tilted_07.jpg", "perspective/tilted_08.jpg", "perspective/tilted_09.jpg", "perspective/tilted_10.jpg"]
+    },
+    {
+      "id": "blank",
+      "name": {"English": "Blank page", "Tiếng Việt": "Trang trắng"},
+      "files": ["photo_4.jpg", "blank/blank_01.jpg", "blank/blank_02.jpg", "blank/blank_03.jpg", "blank/blank_04.jpg", "blank/blank_05.jpg"]
+    }
+  ]
+}

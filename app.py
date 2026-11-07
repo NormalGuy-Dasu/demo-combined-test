@@ -43,6 +43,7 @@ ZOOM = 2.0
 SAMPLES = ROOT / "samples"
 PHOTO_SAMPLES = [SAMPLES / "photos" / f"photo_{i}.jpg" for i in (1, 2, 3, 4)]
 QR_SAMPLES = [SAMPLES / "qr" / f"qr_{i}.jpg" for i in (1, 2)]
+PHOTO_MANIFEST = SAMPLES / "photos" / "manifest.json"
 MANIFEST = Path(os.environ.get("DEMO_SAMPLE_MANIFEST", SAMPLES / "pdf" / "manifest.json"))
 
 # ---------- texts (every visible message exists in both languages) ----------
@@ -379,6 +380,42 @@ def load_manifest():
         if types:
             cats.append({**cat, "types": [{**t, "path": base / t["file"]} for t in types]})
     return cats
+
+
+def load_photo_cats():
+    """Categories of camera-photo samples (crop and remove-background tabs). A missing file is left out, and so is an empty category."""
+    base = PHOTO_MANIFEST.parent
+    cats = []
+    for cat in json.loads(PHOTO_MANIFEST.read_text(encoding="utf-8"))["categories"]:
+        files = [base / f for f in cat["files"] if (base / f).exists()]
+        if files:
+            cats.append({**cat, "files": files})
+    return cats
+
+
+def photo_gallery(prefix):
+    """Photo samples by category: a row of category buttons, then a grid of thumbnails. Returns the bytes of the chosen photo."""
+    cats = load_photo_cats()
+    if not cats:
+        return None
+    ids = [c["id"] for c in cats]
+    names = {c["id"]: c["name"][lang()] for c in cats}
+    state_key = f"{prefix}_photo_cat"
+    chosen = st.session_state.get(state_key)
+    picked = st.pills(tr("category"), ids, format_func=names.get, default=chosen if chosen in ids else ids[0],
+                      key=f"{prefix}_photo_pills_{lang()}")
+    cat_id = picked or (chosen if chosen in ids else ids[0])  # clicking the active button again must not leave nothing chosen
+    st.session_state[state_key] = cat_id
+    files = next(c for c in cats if c["id"] == cat_id)["files"]
+    out = None
+    for start in range(0, len(files), 4):
+        cols = st.columns(4, vertical_alignment="top")
+        for col, (i, path) in zip(cols, enumerate(files[start:start + 4], start)):
+            with col:
+                st.image(thumbnail(str(path)), width="stretch")
+                if st.button(tr("sample_n", n=i + 1), key=f"{prefix}_sample_{cat_id}_{i}", width="stretch"):
+                    out = path.read_bytes()
+    return out
 
 
 def shown(name):
@@ -1066,6 +1103,8 @@ def input_block(prefix, upload_label, samples, run_label, max_mb, sample_kind, r
     with box:
         if prefix == "pdf":
             data = pdf_gallery() or data
+        elif prefix in ("crop", "bg"):
+            data = photo_gallery(prefix) or data
         else:
             cols = st.columns(4, vertical_alignment="top")
             for i, path in enumerate(samples):
