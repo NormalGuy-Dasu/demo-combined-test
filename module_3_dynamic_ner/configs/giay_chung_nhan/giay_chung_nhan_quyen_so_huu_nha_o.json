@@ -4,6 +4,7 @@
     "start_triggers": [
         "QUYỀN SỞ HỮU NHÀ Ở"
     ],
+    "force_restart_on_same_trigger": true,
     "radar_lines": 20,
     "exclude_triggers": [
         "I.Người sử dụng đất, chủ sở hữu nhà ở và tài sản khác gắn liền với đất",
@@ -11,7 +12,6 @@
     ],
     "start_threshold": 85,
     "end_triggers": [
-        "Hồ sơ gốc số"
     ],
     "end_threshold": 85,
     "extraction_rules": [

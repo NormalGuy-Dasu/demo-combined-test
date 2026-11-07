@@ -4,15 +4,13 @@
     "start_triggers": [
         "VÀ TÀI SẢN GẮN LIỀN VỚI ĐẤT"
     ],
+    "force_restart_on_same_trigger": true,
     "radar_lines": 10,
     "exclude_triggers": [
        "LÀ NHÀ Ở"
     ],
     "start_threshold": 70,
     "end_triggers": [
-        "Điều 1",
-        "ĐIỀU 1",
-        "ĐIÊU 1"
     ],
     "end_threshold": 85,
     "extraction_rules": [
